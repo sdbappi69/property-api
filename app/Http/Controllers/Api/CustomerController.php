@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CustomerRequest;
 use Illuminate\Http\Request;
 use App\Invoicer\Repositories\Contracts\CustomerInterface;
 
@@ -48,9 +49,16 @@ class CustomerController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
-        //
+        $data = $request->all();
+        $save = $this->customerRepository->create($data);
+
+        if (!is_null($save) && $save['error']) {
+            return $this->respondNotSaved($save['message']);
+        } else {
+            return $this->respondWithSuccess('Success !! Custometer has been created.');
+        }
     }
 
     /**
