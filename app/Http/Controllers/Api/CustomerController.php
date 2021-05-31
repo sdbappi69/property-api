@@ -4,9 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Invoicer\Repositories\Contracts\CustomerInterface;
 
-class CustomerController extends Controller
+class CustomerController extends ApiController
 {
+    /**
+    * @var CustomerInterface
+    */
+    protected $customerRepository, $load;
+
+    /**
+     * CustomerController constructor.
+     * @param CustomerInterface $customerInterface
+     */
+    public function __construct(CustomerInterface $customerInterface)
+    {
+        $this->customerRepository = $customerInterface;
+        $this->load = [];
+    }
     /**
      * Display a listing of the resource.
      *
