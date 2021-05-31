@@ -17,7 +17,7 @@ class Customer extends Model
      *
      * @var string
      */
-    protected $table = 'users';
+    protected $table = 'customers';
 
     /**
      * Main table primary key
@@ -38,20 +38,8 @@ class Customer extends Model
         'last_name',
         'phone',
         'email',
-        'password',
-        'confirmed',
-        'confirmation_code',
-
-        'photo',
-        'postal_code',
-        'postal_address',
-        'physical_address',
-        'city',
         'country',
-
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'city'
     ];
 
     /**
@@ -68,9 +56,9 @@ class Customer extends Model
          * @var array
          */
         'columns' => [
-            'users.first_name' => 1,
-            'users.last_name' => 1,
-            'users.email' => 1,
+            'customers.first_name' => 1,
+            'customers.last_name' => 1,
+            'customers.email' => 1,
         ]
     ];
 
