@@ -15,15 +15,27 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->string('id', 36)->primary()->unique();
+            $table->uuid('id')->primary();
+            //$table->string('id', 36)->primary()->unique();
 
             $table->string('product_name');
             $table->string('product_code');
             $table->integer('product_price');
             $table->string('product_description')->nullable();
-            $table->unsignedBigInteger('category_id')->unsigned()->nullable();
-            $table->foreign('category_id')->constrained('product__categories')->references('id')->on('product__categories')->onDelete('cascade');
 
+            //$table->unsignedBigInteger('product__categoriesId');
+            $table->uuid('product__categoriesId')->nullable(false);
+            $table->foreign('product__categoriesId')
+            ->references('id')
+            ->on('users')
+            ->onDelete('cascade');
+
+            //  $table->unsignedBigInteger('product_categories_id')->unsigned()->nullable();
+            //  $table->foreign('product_categories_id')->references('id')->on('product_categories')->onDelete('cascade');
+
+
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

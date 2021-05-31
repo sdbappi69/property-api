@@ -15,7 +15,8 @@ class CreateProductCategoriesTable extends Migration
     {
         Schema::create('product__categories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->string('id', 36)->primary()->unique();
+            $table->uuid('id')->primary();
+            // $table->string('id', 36)->primary()->unique();
 
             $table->string('name');
 
