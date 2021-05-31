@@ -49,7 +49,7 @@ class BaseModel extends Model{
     public function save (array $options = array())
     {
         try{
-            parent::save($options);
+            parent::save($options); 
         }catch(\Exception $e){
             // check if the exception is caused by double id
             if(preg_match('/Integrity constraint violation: 1062 Duplicate entry \S+ for key \'PRIMARY\'/', $e->getMessage(), $matches)){

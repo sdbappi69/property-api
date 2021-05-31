@@ -107,7 +107,6 @@ class CustomerController extends ApiController
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
         } else {
-          //  $this->loginProxy->logout();
             return $this->respondWithSuccess('Success !! Customer has been updated.');
         }
     }
