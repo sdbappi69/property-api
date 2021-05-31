@@ -31,7 +31,7 @@ class Product_Category extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'name',
+        'name'
     ];
 
     /**
