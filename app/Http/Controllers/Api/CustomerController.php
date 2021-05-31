@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequest;
+use App\Http\Resources\CustomerResource;
 use Illuminate\Http\Request;
 use App\Invoicer\Repositories\Contracts\CustomerInterface;
 
@@ -30,7 +31,11 @@ class CustomerController extends ApiController
      */
     public function index()
     {
-        //
+        if ($select = request()->query('list')) {
+            return $this->customerRepository->listAll($this->formatFields($select), []);
+        } else
+            $data = CustomerResource::collection($this->customerRepository->getAllPaginate($this->load));
+        return $this->respondWithData($data);
     }
 
     /**
@@ -67,9 +72,14 @@ class CustomerController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($uuid)
     {
-        //
+        $customer = $this->customerRepository->getById($uuid);
+
+        if (!$customer) {
+            return $this->respondNotFound('Customer not found.');
+        }
+        return $this->respondWithData(new CustomerResource($customer));
     }
 
     /**
@@ -90,9 +100,16 @@ class CustomerController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CustomerRequest $request, $uuid)
     {
-        //
+        $save = $this->customerRepository->update(array_filter($request->all()), $uuid);
+
+        if (!is_null($save) && $save['error']) {
+            return $this->respondNotSaved($save['message']);
+        } else {
+          //  $this->loginProxy->logout();
+            return $this->respondWithSuccess('Success !! Customer has been updated.');
+        }
     }
 
     /**
@@ -101,8 +118,11 @@ class CustomerController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uuid)
     {
-        //
+        if ($this->customerRepository->delete($uuid)) {
+            return $this->respondWithSuccess('Success !! Customer has been deleted');
+        }
+        return $this->respondNotFound('Customer not deleted');
     }
 }

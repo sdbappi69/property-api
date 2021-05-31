@@ -43,7 +43,7 @@ class CustomerRequest extends BaseRequest
                         'first_name'            => 'required',
                         'middle_name'           => '',
                         'last_name'             => 'required',
-                        'email'                 => 'email|required|unique:email',
+                        'email'                 => 'required',
                         'phone'                 => 'required',
                         'city'                  => '',
                         'country'               => 'required',
