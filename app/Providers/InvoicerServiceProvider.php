@@ -23,7 +23,7 @@ class InvoicerServiceProvider extends ServiceProvider
         'Customer',
         'ProductCategory',
         'Product',
-        'Currency'
+        'Invoice'
     ];
 
     /**
