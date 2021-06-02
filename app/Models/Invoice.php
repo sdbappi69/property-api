@@ -55,10 +55,10 @@ class Invoice extends BaseModel
          * @var array
          */
         'columns' => [
-            'invoices.invoiceNumber' => 1,
-            'invoices.InvoiceDate' => 1,
-            'invoices.dueDate' => 1,
-            'invoices.status' => 1
+            'invoices.invoiceNumber'    => 1,
+            'invoices.InvoiceDate'      => 1,
+            'invoices.dueDate'          => 1,
+            'invoices.status'           => 1
         ]
     ];
 

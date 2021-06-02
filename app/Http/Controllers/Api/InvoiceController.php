@@ -3,18 +3,33 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\InvoiceRequest;
+use App\Http\Resources\InvoiceResource;
+use App\Invoicer\Repositories\Contracts\InvoiceInterface;
+use App\Invoicer\Repositories\Eloquent\InvoiceRepository;
 use Illuminate\Http\Request;
 
-class InvoiceController extends Controller
+class InvoiceController extends ApiController
 {
+    protected $invoiceRepository, $load;
+
+    public function __construct(InvoiceInterface $invoiceInterface)
+    {
+        $this->invoiceRepository = $invoiceInterface;
+        $this->load = [];
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($select = request()->query('list')) {
+            return $this->invoiceRepository->listAll($this->formatFields($select), []);
+        } else
+            $data = InvoiceResource::collection($this->invoiceRepository->getAllPaginate($this->load));
+        return $this->respondWithData($data);
     }
 
     /**
@@ -33,9 +48,16 @@ class InvoiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(InvoiceRequest $request)
     {
-        //
+        $data = $request->all();
+        $save = $this->invoiceRepository->create($data);
+
+        if (!is_null($save) && $save['error']) {
+            return $this->respondNotSaved($save['message']);
+        } else {
+            return $this->respondWithSuccess('Success !! Invoice has been created.');
+        }
     }
 
     /**
@@ -44,9 +66,14 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($uuid)
     {
-        //
+        $invoice = $this->invoiceRepository->getById($uuid);
+
+        if (!$invoice) {
+            return $this->respondNotFound('Invoice not found.');
+        }
+        return $this->respondWithData(new InvoiceResource($invoice));
     }
 
     /**
@@ -67,9 +94,15 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(InvoiceRequest $request, $uuid)
     {
-        //
+        $save = $this->invoiceRepository->update(array_filter($request->all()), $uuid);
+
+        if (!is_null($save) && $save['error']) {
+            return $this->respondNotSaved($save['message']);
+        } else {
+            return $this->respondWithSuccess('Success !! Invoice has been updated.');
+        }
     }
 
     /**
@@ -78,8 +111,11 @@ class InvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uuid)
     {
-        //
+        if ($this->invoiceRepository->delete($uuid)) {
+            return $this->respondWithSuccess('Success !! Invoice has been deleted');
+        }
+        return $this->respondNotFound('Invoice not deleted');
     }
 }

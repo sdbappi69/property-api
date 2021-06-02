@@ -2,29 +2,58 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class InvoiceRequest extends FormRequest
+class InvoiceRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return false;
-    }
-
-    /**
+      /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $rules = [];
+
+        switch($this->method())
+        {
+            case 'GET':
+            case 'DELETE':
+                {
+                    return [];
+                    break;
+                }
+            case 'POST':
+                {
+                    $rules = [
+                        'invoiceNumber'             => 'required',
+                        'InvoiceDate'               => 'required',
+                        'dueDate'                   => 'required',
+                        'status'                     => 'required',
+                        'note'                      => '',
+                        'product_id'                => 'required',
+                        'customer_id'               => 'required',
+                        'currency_id'               => 'required'
+                    ];
+                    break;
+                }
+            case 'PUT':
+            case 'PATCH':
+                {
+                    $rules = [
+                        'invoiceNumber'             => 'required',
+                        'InvoiceDate'               => 'required',
+                        'dueDate'                   => 'required',
+                        'status'                     => 'required',
+                        'note'                      => '',
+                        'product_id'                => 'required',
+                        'customer_id'               => 'required',
+                        'currency_id'               => 'required'
+                    ];
+                    break;
+                }
+            default:break;
+        }
+        return $rules;
     }
 }
