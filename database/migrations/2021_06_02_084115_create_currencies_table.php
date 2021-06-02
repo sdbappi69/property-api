@@ -14,7 +14,7 @@ class CreateCurrenciesTable extends Migration
     public function up()
     {
         Schema::create('currencies', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             $table->string('country', 100);
             $table->string('currency', 100);
@@ -23,7 +23,6 @@ class CreateCurrenciesTable extends Migration
             $table->string('thousand_separator', 10);
             $table->string('decimal_separator', 10);
 
-            $table->softDeletes();
             $table->timestamps();
         });
     }
