@@ -44,7 +44,7 @@ class InvoiceRequest extends BaseRequest
                         'invoiceNumber'             => 'required',
                         'InvoiceDate'               => 'required',
                         'dueDate'                   => 'required',
-                        'status'                     => 'required',
+                        'status'                    => 'required',
                         'note'                      => '',
                         'product_id'                => 'required',
                         'customer_id'               => 'required',
