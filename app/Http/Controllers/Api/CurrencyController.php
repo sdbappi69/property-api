@@ -32,15 +32,8 @@ class CurrencyController extends ApiController
      */
     public function index()
     {
-/*         if ($select = request()->query('list')) {
-            return $this->currencyRepository->listAll($this->formatFields($select), []);
-        } else
-            $data = CurrencyResource::collection($this->currencyRepository->getAllPaginate($this->load));
-        return $this->respondWithData($data); */
          $currency = DB::table('currencies')->select('id', 'country', 'currency', 'code', 'symbol')->get();
          return response()->json($currency);
-         //return $currency;
-
     }
 
     /**
@@ -70,9 +63,10 @@ class CurrencyController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show($id)
     {
-
+        $currency = DB::table('currencies')->select('id', 'country', 'currency', 'code', 'symbol')->find($id);
+        return response()->json($currency);
     }
 
     /**
