@@ -3,18 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\InvoiceRequest;
-use App\Http\Resources\InvoiceResource;
-use App\Invoicer\Repositories\Contracts\InvoiceInterface;
+use App\Http\Requests\QuotationRequest;
+use App\Http\Resources\QuotationResource;
+use App\Invoicer\Repositories\Contracts\QuotationInterface;
 use Illuminate\Http\Request;
 
-class InvoiceController extends ApiController
+class QuotationController extends ApiController
 {
-    protected $invoiceRepository, $load;
+    protected $quotationRepository, $load;
 
-    public function __construct(InvoiceInterface $invoiceInterface)
+    public function __construct(QuotationInterface $quotationInterface)
     {
-        $this->invoiceRepository = $invoiceInterface;
+        $this->quotationRepository = $quotationInterface;
         $this->load = [];
     }
     /**
@@ -25,9 +25,9 @@ class InvoiceController extends ApiController
     public function index(Request $request)
     {
         if ($select = request()->query('list')) {
-            return $this->invoiceRepository->listAll($this->formatFields($select), []);
+            return $this->quotationRepository->listAll($this->formatFields($select), []);
         } else
-            $data = InvoiceResource::collection($this->invoiceRepository->getAllPaginate($this->load));
+            $data = QuotationResource::collection($this->quotationRepository->getAllPaginate($this->load));
         return $this->respondWithData($data);
     }
 
@@ -47,15 +47,15 @@ class InvoiceController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(InvoiceRequest $request)
+    public function store(QuotationRequest $request)
     {
         $data = $request->all();
-        $save = $this->invoiceRepository->create($data);
+        $save = $this->quotationRepository->create($data);
 
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
         } else {
-            return $this->respondWithSuccess('Success !! Invoice has been created.');
+            return $this->respondWithSuccess('Success !! Quotation has been created.');
         }
     }
 
@@ -67,12 +67,12 @@ class InvoiceController extends ApiController
      */
     public function show($uuid)
     {
-        $invoice = $this->invoiceRepository->getById($uuid);
+        $quotation = $this->quotationRepository->getById($uuid);
 
-        if (!$invoice) {
-            return $this->respondNotFound('Invoice not found.');
+        if (!$quotation) {
+            return $this->respondNotFound('Quotation not found.');
         }
-        return $this->respondWithData(new InvoiceResource($invoice));
+        return $this->respondWithData(new QuotationResource($quotation));
     }
 
     /**
@@ -93,14 +93,14 @@ class InvoiceController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(InvoiceRequest $request, $uuid)
+    public function update(QuotationRequest $request, $uuid)
     {
-        $save = $this->invoiceRepository->update(array_filter($request->all()), $uuid);
+        $save = $this->quotationRepository->update(array_filter($request->all()), $uuid);
 
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
         } else {
-            return $this->respondWithSuccess('Success !! Invoice has been updated.');
+            return $this->respondWithSuccess('Success !! Quotation has been updated.');
         }
     }
 
@@ -112,9 +112,9 @@ class InvoiceController extends ApiController
      */
     public function destroy($uuid)
     {
-        if ($this->invoiceRepository->delete($uuid)) {
-            return $this->respondWithSuccess('Success !! Invoice has been deleted');
+        if ($this->quotationRepository->delete($uuid)) {
+            return $this->respondWithSuccess('Success !! Quotation has been deleted');
         }
-        return $this->respondNotFound('Invoice not deleted');
+        return $this->respondNotFound('Quotation not deleted');
     }
 }
