@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CurrencyController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\QuotationController;
+use App\Http\Controllers\Api\ExpenseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,5 @@ Route::group(array('prefix' => '/v1'), function () {
     Route::resource('/currencies', CurrencyController::class);
     Route::resource('/invoices', InvoiceController::class);
     Route::resource('/quotations', QuotationController::class);
+    Route::resource('/expenses/categories', ExpenseController::class);
 });
