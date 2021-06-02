@@ -3,7 +3,6 @@
 namespace App\Invoicer\Repositories\Eloquent;
 
 use App\Models\ProductCategory;
-use App\Invoicer\Repositories\Contracts\CustomerInterface;
 use App\Invoicer\Repositories\Contracts\ProductCategoryInterface;
 use App\Models\Product_Category;
 

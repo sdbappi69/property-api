@@ -3,23 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductCategoryRequest;
-use App\Http\Resources\ProductCategoryResource;
-use App\Invoicer\Repositories\Contracts\ProductCategoryInterface;
+use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Invoicer\Repositories\Contracts\ProductInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
-class ProductCategoryController extends ApiController
+class ProductController extends ApiController
 {
-    protected $productCategoryRepository, $load;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $productRepository, $load;
 
-    public function __construct(ProductCategoryInterface $productCategoryInterface)
+    public function __construct(ProductInterface $productInterface)
     {
-        $this->productCategoryRepository = $productCategoryInterface;
+        $this->productRepository = $productInterface;
         $this->load = [];
     }
     /**
@@ -30,9 +26,9 @@ class ProductCategoryController extends ApiController
     public function index(Request $request)
     {
         if ($select = request()->query('list')) {
-            return $this->productCategoryRepository->listAll($this->formatFields($select), []);
+            return $this->productRepository->listAll($this->formatFields($select), []);
         } else
-            $data = ProductCategoryResource::collection($this->productCategoryRepository->getAllPaginate($this->load));
+            $data = ProductResource::collection($this->productRepository->getAllPaginate($this->load));
         return $this->respondWithData($data);
     }
 
@@ -52,18 +48,18 @@ class ProductCategoryController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductCategoryRequest $request)
+    public function store(ProductRequest $request)
     {
         $data = $request->all();
         //dd($data);
-        $save = $this->productCategoryRepository->create($data);
+        $save = $this->productRepository->create($data);
 
-        //Log::info($save);
+        Log::info($save);
 
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
         } else {
-            return $this->respondWithSuccess('Success !! Product Category has been created.');
+            return $this->respondWithSuccess('Success !! Product has been created.');
         }
     }
 
@@ -75,12 +71,12 @@ class ProductCategoryController extends ApiController
      */
     public function show($uuid)
     {
-        $product_category = $this->productCategoryRepository->getById($uuid);
+        $product = $this->productRepository->getById($uuid);
 
-        if (!$product_category) {
-            return $this->respondNotFound('Product Category not found.');
+        if (!$product) {
+            return $this->respondNotFound('Product not found.');
         }
-        return $this->respondWithData(new ProductCategoryResource($product_category));
+        return $this->respondWithData(new ProductResource($product));
     }
 
     /**
@@ -101,16 +97,16 @@ class ProductCategoryController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductCategoryRequest $request, $uuid)
+    public function update(ProductRequest $request, $uuid)
     {
-        $save = $this->productCategoryRepository->update(array_filter($request->all()), $uuid);
+        $save = $this->productRepository->update(array_filter($request->all()), $uuid);
 
       //  Log::info($save);
 
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
         } else {
-            return $this->respondWithSuccess('Success !! Product Category has been updated.');
+            return $this->respondWithSuccess('Success !! Product has been updated.');
         }
     }
 
@@ -122,8 +118,8 @@ class ProductCategoryController extends ApiController
      */
     public function destroy($uuid)
     {
-        if ($this->productCategoryRepository->delete($uuid)) {
-            return $this->respondWithSuccess('Success !! Product Category has been deleted');
+        if ($this->productRepository->delete($uuid)) {
+            return $this->respondWithSuccess('Success !! Product has been deleted');
         }
         return $this->respondNotFound('Product Category not deleted');
     }
