@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\QuotationController;
 use App\Http\Controllers\Api\ExpenseCategoryController;
 use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\CompanyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,5 @@ Route::group(array('prefix' => '/v1'), function () {
     Route::resource('/expenses/categories', ExpenseCategoryController::class);
     Route::resource('/expenses', ExpenseController::class);
     Route::resource('/payments', PaymentController::class);
+    Route::resource('/companies', CompanyController::class);
 });

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\CurrencyResource;
 use App\Invoicer\Repositories\Contracts\CurrencyInterface;
 use Illuminate\Http\Request;
 use App\Models\Currency;
@@ -17,7 +16,7 @@ class CurrencyController extends ApiController
     protected $currencyRepository, $load;
 
     /**
-     * CustomerController constructor.
+     * CurrencyController constructor.
      * @param CurrencyInterface currencyInterface
      */
     public function __construct(CurrencyInterface $currencyInterface)

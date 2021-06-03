@@ -66,8 +66,7 @@ class Company extends BaseModel
          */
         'columns' => [
             'companies.name'    => 1,
-            'companies.code'       => 1,
-            'companies.currency'   => 1,
+            'companies.user_id'       => 1
         ]
     ];
 
