@@ -26,11 +26,11 @@ class ProductRequest extends BaseRequest
             case 'POST':
                 {
                     $rules = [
-                        'productName'                   => 'required',
-                        'productCode'                   => 'required',
-                        'productPrice'                  => 'required',
-                        'productDescription'            => 'required',
-                        'product_categoriesId'          => 'required'
+                        'product_name'                   => 'required',
+                        'product_code'                   => 'required',
+                        'product_price'                  => 'required',
+                        'product_description'            => 'required',
+                        'product_categories_id'          => 'required'
                     ];
                     break;
                 }
@@ -38,11 +38,11 @@ class ProductRequest extends BaseRequest
             case 'PATCH':
                 {
                     $rules = [
-                        'productName'                   => 'required',
-                        'productCode'                   => 'required',
-                        'productPrice'                  => 'required',
-                        'productDescription'            => 'required',
-                        'product_categoriesId'          => 'required'
+                        'product_name'                   => 'required',
+                        'product_code'                   => 'required',
+                        'product_price'                  => 'required',
+                        'product_description'            => 'required',
+                        'product_categories_id'          => 'required'
                     ];
                     break;
                 }

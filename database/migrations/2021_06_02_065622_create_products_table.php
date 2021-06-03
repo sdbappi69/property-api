@@ -18,13 +18,13 @@ class CreateProductsTable extends Migration
             $table->uuid('id')->primary();
             //$table->string('id', 36)->primary()->unique();
 
-            $table->string('productName');
-            $table->string('productCode');
-            $table->integer('productPrice');
-            $table->string('productDescription')->nullable();
+            $table->string('product_name');
+            $table->string('product_code');
+            $table->integer('product_price');
+            $table->string('product_description')->nullable();
 
-            $table->uuid('product_categoriesId')->nullable(false);
-            $table->foreign('product_categoriesId')
+            $table->uuid('product_categories_id')->nullable(false);
+            $table->foreign('product_categories_id')
             ->references('id')
             ->on('product_categories')
             ->onDelete('cascade');

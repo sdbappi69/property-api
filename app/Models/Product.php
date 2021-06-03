@@ -31,11 +31,11 @@ class Product extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'productName',
-        'productCode',
-        'productPrice',
-        'productDescription',
-        'product_categoriesId'
+        'product_name',
+        'product_code',
+        'product_price',
+        'product_description',
+        'product_categories_id'
     ];
 
     /**
@@ -52,8 +52,8 @@ class Product extends BaseModel
          * @var array
          */
         'columns' => [
-            'products.productName' => 1,
-            'products.productCode' => 1
+            'products.product_name' => 1,
+            'products.product_code' => 1
         ]
     ];
 
