@@ -5,7 +5,7 @@ namespace App\Invoicer\Repositories\Eloquent;
 use App\Invoicer\Repositories\Contracts\ExpenseInterface;
 use App\Models\Expense;
 
-class InvoiceRepository extends BaseRepository implements ExpenseInterface {
+class ExpenseRepository extends BaseRepository implements ExpenseInterface {
 
     protected $model;
 

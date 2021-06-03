@@ -35,7 +35,6 @@ class Expense extends BaseModel
         'amount',
         'note',
         'date',
-        'note',
         'currency_id',
         'expense_categories_id'
     ];
