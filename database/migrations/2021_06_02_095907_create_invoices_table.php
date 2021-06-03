@@ -18,7 +18,7 @@ class CreateInvoicesTable extends Migration
             $table->uuid('id')->primary();
 
             $table->string('invoice_number');
-            $table->dateTime('Invoice_date');
+            $table->dateTime('invoice_date');
             $table->dateTime('due_date');
             $table->enum('status', ['paid', 'unpaid', 'partially paid', 'overdue']);
             $table->string('note');

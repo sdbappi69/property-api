@@ -26,14 +26,14 @@ class InvoiceRequest extends BaseRequest
             case 'POST':
                 {
                     $rules = [
-                        'invoiceNumber'             => 'required',
-                        'InvoiceDate'               => 'required',
-                        'dueDate'                   => 'required',
+                        'invoice_number'             => 'required',
+                        'invoice_date'               => 'required',
+                        'due_date'                   => 'required',
                         'status'                     => 'required',
-                        'note'                      => '',
-                        'product_id'                => 'required',
-                        'customer_id'               => 'required',
-                        'currency_id'               => 'required'
+                        'note'                       => '',
+                        'product_id'                 => 'required',
+                        'customer_id'                => 'required',
+                        'currency_id'                => 'required'
                     ];
                     break;
                 }
@@ -41,14 +41,14 @@ class InvoiceRequest extends BaseRequest
             case 'PATCH':
                 {
                     $rules = [
-                        'invoiceNumber'             => 'required',
-                        'InvoiceDate'               => 'required',
-                        'dueDate'                   => 'required',
-                        'status'                    => 'required',
-                        'note'                      => '',
-                        'product_id'                => 'required',
-                        'customer_id'               => 'required',
-                        'currency_id'               => 'required'
+                        'invoice_number'             => 'required',
+                        'invoice_date'               => 'required',
+                        'due_date'                   => 'required',
+                        'status'                     => 'required',
+                        'note'                       => '',
+                        'product_id'                 => 'required',
+                        'customer_id'                => 'required',
+                        'currency_id'                => 'required'
                     ];
                     break;
                 }

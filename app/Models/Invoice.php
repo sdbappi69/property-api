@@ -31,9 +31,9 @@ class Invoice extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'invoiceNumber',
-        'InvoiceDate',
-        'dueDate',
+        'invoice_number',
+        'invoice_date',
+        'due_date',
         'status',
         'note',
         'product_id',
@@ -55,9 +55,9 @@ class Invoice extends BaseModel
          * @var array
          */
         'columns' => [
-            'invoices.invoiceNumber'    => 1,
-            'invoices.InvoiceDate'      => 1,
-            'invoices.dueDate'          => 1,
+            'invoices.invoice_number'    => 1,
+            'invoices.invoice_date'      => 1,
+            'invoices.due_date'          => 1,
             'invoices.status'           => 1
         ]
     ];
