@@ -33,7 +33,8 @@ class PaymentRequest extends BaseRequest
                         'transaction_number'                => '',
                         'invoice_number_id'                 => 'required',
                         'customer_id'                       => 'required',
-                        'currency_id'                       => 'required'
+                        'currency_id'                       => 'required',
+                        'company_id'                        => 'required'
                     ];
                     break;
                 }

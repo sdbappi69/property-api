@@ -27,7 +27,8 @@ class ExpenseCategoryRequest extends BaseRequest
                 {
                     $rules = [
                         'name'            => 'required',
-                        'description'            => 'required'
+                        'description'            => 'required',
+                        'company_id'            => 'required',
                     ];
                     break;
                 }
@@ -36,7 +37,8 @@ class ExpenseCategoryRequest extends BaseRequest
                 {
                     $rules = [
                         'name'            => 'required',
-                        'description'            => 'required'
+                        'description'            => 'required',
+                        'company_id'            => 'required',
                     ];
                     break;
                 }

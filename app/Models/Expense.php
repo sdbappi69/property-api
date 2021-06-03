@@ -37,10 +37,7 @@ class Expense extends BaseModel
         'date',
         'currency_id',
         'expense_categories_id',
-
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'company_id'
     ];
 
     /**

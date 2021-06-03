@@ -30,7 +30,8 @@ class ProductRequest extends BaseRequest
                         'product_code'                   => 'required',
                         'product_price'                  => 'required',
                         'product_description'            => 'required',
-                        'product_categories_id'          => 'required'
+                        'product_categories_id'          => 'required',
+                        'company_id'                     => 'required',
                     ];
                     break;
                 }
@@ -42,7 +43,8 @@ class ProductRequest extends BaseRequest
                         'product_code'                   => 'required',
                         'product_price'                  => 'required',
                         'product_description'            => 'required',
-                        'product_categories_id'          => 'required'
+                        'product_categories_id'          => 'required',
+                        'company_id'                     => 'required',
                     ];
                     break;
                 }

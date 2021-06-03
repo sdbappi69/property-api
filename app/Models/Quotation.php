@@ -37,10 +37,7 @@ class Quotation extends BaseModel
         'product_id',
         'customer_id',
         'currency_id',
-
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'company_id'
     ];
 
     /**

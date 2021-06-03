@@ -40,10 +40,7 @@ class Customer extends BaseModel
         'email',
         'country',
         'city',
-
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'company_id',
     ];
 
     /**

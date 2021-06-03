@@ -33,7 +33,8 @@ class InvoiceRequest extends BaseRequest
                         'note'                       => '',
                         'product_id'                 => 'required',
                         'customer_id'                => 'required',
-                        'currency_id'                => 'required'
+                        'currency_id'                => 'required',
+                        'company_id'                 => 'required'
                     ];
                     break;
                 }
@@ -48,7 +49,8 @@ class InvoiceRequest extends BaseRequest
                         'note'                       => '',
                         'product_id'                 => 'required',
                         'customer_id'                => 'required',
-                        'currency_id'                => 'required'
+                        'currency_id'                => 'required',
+                        'company_id'                 => 'required'
                     ];
                     break;
                 }

@@ -36,10 +36,7 @@ class Product extends BaseModel
         'product_price',
         'product_description',
         'product_categories_id',
-
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'company_id'
     ];
 
     /**

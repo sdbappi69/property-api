@@ -33,6 +33,7 @@ class CustomerRequest extends BaseRequest
                         'phone'                 => 'required',
                         'city'                  => '',
                         'country'               => 'required',
+                        'company_id'            => 'required',
                     ];
                     break;
                 }
@@ -47,6 +48,7 @@ class CustomerRequest extends BaseRequest
                         'phone'                 => 'required',
                         'city'                  => '',
                         'country'               => 'required',
+                        'company_id'            => 'required',
                     ];
                     break;
                 }

@@ -31,8 +31,8 @@ class ExpenseRequest extends BaseRequest
                         'note'                                  => '',
                         'date'                                  => 'required',
                         'currency_id'                           => 'required',
-                        'expense_categories_id'                 => 'required'
-
+                        'expense_categories_id'                 => 'required',
+                        'company_id'                            => 'required'
                     ];
                     break;
                 }
@@ -45,7 +45,8 @@ class ExpenseRequest extends BaseRequest
                         'note'                                  => '',
                         'date'                                  => 'required',
                         'currency_id'                           => 'required',
-                        'expense_categories_id'                 => 'required'
+                        'expense_categories_id'                 => 'required',
+                        'company_id'                            => 'required'
                     ];
                     break;
                 }

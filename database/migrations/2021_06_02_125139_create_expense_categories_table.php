@@ -20,6 +20,12 @@ class CreateExpenseCategoriesTable extends Migration
             $table->string('name');
             $table->string('description');
 
+            $table->uuid('company_id')->nullable(false);
+            $table->foreign('company_id')
+            ->references('id')
+            ->on('companies')
+            ->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });

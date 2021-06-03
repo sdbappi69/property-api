@@ -25,6 +25,12 @@ class CreateCustomersTable extends Migration
             $table->string('country')->nullable();
             $table->string('city')->nullable();
 
+            $table->uuid('company_id')->nullable(false);
+            $table->foreign('company_id')
+            ->references('id')
+            ->on('companies')
+            ->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });

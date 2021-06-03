@@ -27,6 +27,7 @@ class ProductCategoryRequest extends BaseRequest
                 {
                     $rules = [
                         'name'            => 'required',
+                        'company_id'      => 'required'
                     ];
                     break;
                 }
@@ -35,6 +36,7 @@ class ProductCategoryRequest extends BaseRequest
                 {
                     $rules = [
                         'name'            => 'required',
+                        'company_id'      => 'required',
                     ];
                     break;
                 }

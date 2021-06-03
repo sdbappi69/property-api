@@ -33,10 +33,7 @@ class ExpenseCategory extends BaseModel
     protected $fillable = [
         'name',
         'description',
-
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'company_id'
     ];
 
     /**

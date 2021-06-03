@@ -33,6 +33,12 @@ class CreateQuotationsTable extends Migration
             ->on('customers')
             ->onDelete('cascade');
 
+            $table->uuid('company_id')->nullable(false);
+            $table->foreign('company_id')
+            ->references('id')
+            ->on('companies')
+            ->onDelete('cascade');
+
             $table->foreignId('currency_id')->constrained();
 
 

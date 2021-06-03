@@ -29,6 +29,12 @@ class CreateExpensesTable extends Migration
             ->on('expense_categories')
             ->onDelete('cascade');
 
+            $table->uuid('company_id')->nullable(false);
+            $table->foreign('company_id')
+            ->references('id')
+            ->on('companies')
+            ->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });

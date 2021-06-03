@@ -23,8 +23,9 @@ class CustomerResource extends JsonResource
             'phone'                 => $this->phone,
             'city'                  => $this->city,
             'country'               => $this->country,
+            'company_id'            => $this->company_id,
             'created_at'            => $this->created_at,
-            'updated_at'            => $this->updated_at,
+            'updated_at'            => $this->updated_at
         ];
     }
 }

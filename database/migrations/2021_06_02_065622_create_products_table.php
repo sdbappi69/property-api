@@ -29,6 +29,12 @@ class CreateProductsTable extends Migration
             ->on('product_categories')
             ->onDelete('cascade');
 
+            $table->uuid('company_id')->nullable(false);
+            $table->foreign('company_id')
+            ->references('id')
+            ->on('companies')
+            ->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });

@@ -24,6 +24,7 @@ class PaymentResource extends JsonResource
             'invoice_number_id'                 => $this->invoice_number_id,
             'customer_id'                       => $this->customer_id,
             'currency_id'                       => $this->currency_id,
+            'company_id'                        => $this->company_id,
             'created_at'                        => $this->created_at,
             'updated_at'                        => $this->updated_at
         ];

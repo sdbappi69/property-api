@@ -32,10 +32,7 @@ class ProductCategory extends BaseModel
      */
     protected $fillable = [
         'name',
-        
-        'created_by',
-        'updated_by',
-        'deleted_by'
+        'company_id'
     ];
 
     /**
