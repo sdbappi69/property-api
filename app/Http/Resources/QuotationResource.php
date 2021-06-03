@@ -16,7 +16,7 @@ class QuotationResource extends JsonResource
     {
         return [
             'id'                            => $this->id,
-            'quotationNumber'               => $this->quotationNumber,
+            'quotation_number'               => $this->quotation_number,
             'date'                          => $this->date,
             'note'                          => $this->note,
             'product_id'                    => $this->product_id,

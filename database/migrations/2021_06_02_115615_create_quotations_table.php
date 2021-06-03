@@ -17,7 +17,7 @@ class CreateQuotationsTable extends Migration
             $table->engine = 'InnoDB';
             $table->uuid('id')->primary();
 
-            $table->string('quotationNumber');
+            $table->string('quotation_number');
             $table->dateTime('date');
             $table->string('note');
 

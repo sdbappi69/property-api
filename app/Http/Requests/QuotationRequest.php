@@ -26,12 +26,12 @@ class QuotationRequest extends BaseRequest
             case 'POST':
                 {
                     $rules = [
-                        'quotationNumber'             => 'required',
-                        'date'                      => 'required',
-                        'note'                      => '',
-                        'product_id'                => 'required',
-                        'customer_id'               => 'required',
-                        'currency_id'               => 'required'
+                        'quotation_number'              => 'required',
+                        'date'                          => 'required',
+                        'note'                          => '',
+                        'product_id'                    => 'required',
+                        'customer_id'                   => 'required',
+                        'currency_id'                   => 'required'
                     ];
                     break;
                 }
@@ -39,12 +39,12 @@ class QuotationRequest extends BaseRequest
             case 'PATCH':
                 {
                     $rules = [
-                        'quotationNumber'             => 'required',
-                        'date'                      => 'required',
-                        'note'                      => '',
-                        'product_id'                => 'required',
-                        'customer_id'               => 'required',
-                        'currency_id'               => 'required'
+                        'quotation_number'              => 'required',
+                        'date'                          => 'required',
+                        'note'                          => '',
+                        'product_id'                    => 'required',
+                        'customer_id'                   => 'required',
+                        'currency_id'                   => 'required'
                     ];
                     break;
                 }

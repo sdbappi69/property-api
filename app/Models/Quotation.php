@@ -31,7 +31,7 @@ class Quotation extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'quotationNumber',
+        'quotation_number',
         'date',
         'note',
         'product_id',
@@ -53,8 +53,8 @@ class Quotation extends BaseModel
          * @var array
          */
         'columns' => [
-            'quotations.quotationNumber'    => 1,
-            'quotations.date'               => 1
+            'quotations.quotation_number'       => 1,
+            'quotations.date'                   => 1
         ]
     ];
 
