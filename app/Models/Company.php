@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
+use App\Traits\SearchableTrait;
+use Illuminate\Notifications\Notifiable;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\SearchableTrait;
 
-class ProductCategory extends BaseModel
+class Company extends BaseModel
 {
-    use  SearchableTrait, HasFactory;
+    use Notifiable, SearchableTrait, HasFactory;
 
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'product_categories';
+    protected $table = 'companies';
 
     /**
      * Main table primary key
@@ -32,7 +34,18 @@ class ProductCategory extends BaseModel
      */
     protected $fillable = [
         'name',
-        
+        'phone',
+        'email',
+        'logo',
+        'city',
+        'country',
+        'postal_code',
+        'postal_address',
+        'physical_address',
+        'user_id',
+        'currency_id',
+        'start_date',
+
         'created_by',
         'updated_by',
         'deleted_by'
@@ -52,9 +65,10 @@ class ProductCategory extends BaseModel
          * @var array
          */
         'columns' => [
-            'product_categories.name' => 1,
+            'companies.name'    => 1,
+            'companies.code'       => 1,
+            'companies.currency'   => 1,
         ]
     ];
-
 
 }

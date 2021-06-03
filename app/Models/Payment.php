@@ -38,7 +38,11 @@ class Payment extends BaseModel
         'transaction_number',
         'invoice_number_id',
         'customer_id',
-        'currency_id'
+        'currency_id',
+
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**

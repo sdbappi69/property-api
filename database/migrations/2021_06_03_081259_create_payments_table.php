@@ -21,7 +21,7 @@ class CreatePaymentsTable extends Migration
             $table->integer('amount');
             $table->string('note');
             $table->string('payment_method');
-            $table->string('transaction_number');
+            $table->string('transaction_number')->nullable();
 
             $table->uuid('invoice_number_id')->nullable(false);
             $table->foreign('invoice_number_id')

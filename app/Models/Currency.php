@@ -38,7 +38,11 @@ class Currency extends BaseModel
         'code',
         'symbol',
         'thousand_separator',
-        'decimal_separator'
+        'decimal_separator',
+
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**

@@ -39,7 +39,11 @@ class Customer extends BaseModel
         'phone',
         'email',
         'country',
-        'city'
+        'city',
+
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**

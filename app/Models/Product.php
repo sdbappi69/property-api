@@ -35,7 +35,11 @@ class Product extends BaseModel
         'product_code',
         'product_price',
         'product_description',
-        'product_categories_id'
+        'product_categories_id',
+
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**

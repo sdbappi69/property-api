@@ -36,7 +36,11 @@ class Expense extends BaseModel
         'note',
         'date',
         'currency_id',
-        'expense_categories_id'
+        'expense_categories_id',
+
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**
