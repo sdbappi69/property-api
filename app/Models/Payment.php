@@ -55,10 +55,11 @@ class Payment extends BaseModel
          * @var array
          */
         'columns' => [
-            'payments.invoice_number'    => 1,
-            'payments.invoice_date'      => 1,
-            'payments.due_date'          => 1,
-            'payments.status'           => 1
+            'payments.date'                         => 1,
+            'payments.payment_method'               => 1,
+            'payments.transaction_number'           => 1,
+            'payments.customer_id'                  => 1,
+            'payments.invoice_number_id'            => 1
         ]
     ];
 

@@ -26,7 +26,8 @@ class InvoicerServiceProvider extends ServiceProvider
         'Invoice',
         'Quotation',
         'ExpenseCategory',
-        'Expense'
+        'Expense',
+        'Payment'
     ];
 
     /**
