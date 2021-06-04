@@ -21,7 +21,10 @@ class ExpenseCategoryController extends ApiController
     public function __construct(ExpenseCategoryInterface $expenseCategoryInterface)
     {
         $this->expenseCategoryRepository = $expenseCategoryInterface;
-        $this->load = [];
+        $this->load = [
+            'expense',
+            'company'
+        ];
     }
     /**
      * Display a listing of the resource.

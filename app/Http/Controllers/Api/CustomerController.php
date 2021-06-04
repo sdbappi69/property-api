@@ -22,7 +22,9 @@ class CustomerController extends ApiController
     public function __construct(CustomerInterface $customerInterface)
     {
         $this->customerRepository = $customerInterface;
-        $this->load = [];
+        $this->load = [
+            'company',
+        ];
     }
     /**
      * Display a listing of the resource.

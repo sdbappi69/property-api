@@ -53,6 +53,12 @@ class ExpenseCategory extends BaseModel
             'expense_categories.name' => 1,
         ]
     ];
-
-
+    public function expense()
+    {
+        return $this->hasMany('App\Models\Expense', 'expense_categories_id', 'id');
+    }
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
 }

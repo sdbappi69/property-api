@@ -59,6 +59,12 @@ class Expense extends BaseModel
             'expenses.date'                         => 1
         ]
     ];
-
-
+    public function expenseCategory()
+    {
+        return $this->belongsTo('App\Models\ExpenseCategory', 'expense_categories_id', 'id');
+    }
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
 }
