@@ -72,14 +72,38 @@ class Company extends BaseModel
 
     public function customer()
     {
-        return $this->hasMany('App\Models\Customer', 'company_id', 'id')->withTrashed();;
-    }
-    public function currency()
-    {
-        return $this->hasMany(Currency::class);
+        return $this->hasMany('App\Models\Customer', 'company_id', 'id');
     }
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function expense()
+    {
+        return $this->hasMany('App\Models\Expense', 'company_id', 'id');
+    }
+    public function expenceCategory()
+    {
+        return $this->hasMany('App\Models\ExpenseCategory', 'company_id', 'id');
+    }
+    public function invoice()
+    {
+        return $this->hasMany('App\Models\Invoice', 'company_id', 'id');
+    }
+    public function payment()
+    {
+        return $this->hasMany('App\Models\Payment', 'company_id', 'id');
+    }
+    public function product()
+    {
+        return $this->hasMany('App\Models\Product', 'company_id', 'id');
+    }
+    public function productCategory()
+    {
+        return $this->hasMany('App\Models\ProductCategory', 'company_id', 'id');
+    }
+    public function quotaion()
+    {
+        return $this->hasMany('App\Models\Quotation', 'company_id', 'id');
     }
 }

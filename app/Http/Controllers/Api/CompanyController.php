@@ -11,14 +11,22 @@ use Illuminate\Http\Request;
 
 class CompanyController extends ApiController
 {
-    protected $companyRepository, $load;
+    protected $companyRepository, $load, $company;
 
-    public function __construct(CompanyInterface $companyInterface)
+    public function __construct(CompanyInterface $companyInterface, CompanyRepository $company)
     {
-
+        $this->company = $company;
         $this->companyRepository = $companyInterface;
         $this->load = [
-            $this->companyRepository->getAll(['user'])
+            'customer',
+            'user',
+            'quotaion',
+            'expense',
+            'expenceCategory',
+            'invoice',
+            'payment',
+            'product',
+            'productCategory'
         ];
     }
     /**
