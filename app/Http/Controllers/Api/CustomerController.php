@@ -25,7 +25,8 @@ class CustomerController extends ApiController
         $this->load = [
             'company',
             'invoice',
-            'payment'
+            'payment',
+            'quotation'
         ];
     }
     /**

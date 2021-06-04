@@ -52,6 +52,12 @@ class ProductCategory extends BaseModel
             'product_categories.name' => 1,
         ]
     ];
-
-
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
+    public function product()
+    {
+        return $this->hasMany('App\Models\Product', 'product_categoies_id', 'id');
+    }
 }

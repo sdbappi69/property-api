@@ -58,6 +58,16 @@ class Quotation extends BaseModel
             'quotations.date'                   => 1
         ]
     ];
-
-
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product', 'product_id', 'id');
+    }
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');
+    }
 }

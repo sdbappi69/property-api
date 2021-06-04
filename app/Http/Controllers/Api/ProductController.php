@@ -16,7 +16,11 @@ class ProductController extends ApiController
     public function __construct(ProductInterface $productInterface)
     {
         $this->productRepository = $productInterface;
-        $this->load = [];
+        $this->load = [
+            'company',
+            'category',
+            'invoice'
+        ];
     }
     /**
      * Display a listing of the resource.

@@ -58,6 +58,16 @@ class Product extends BaseModel
             'products.product_code' => 1
         ]
     ];
-
-
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
+    public function category()
+    {
+        return $this->belongsTo('App\Models\ProductCategory', 'product_categoies_id', 'id');
+    }
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 }

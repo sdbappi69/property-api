@@ -15,7 +15,11 @@ class QuotationController extends ApiController
     public function __construct(QuotationInterface $quotationInterface)
     {
         $this->quotationRepository = $quotationInterface;
-        $this->load = [];
+        $this->load = [
+            'product',
+            'company',
+            'customer'
+        ];
     }
     /**
      * Display a listing of the resource.
