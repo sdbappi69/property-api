@@ -15,7 +15,11 @@ class PaymentController extends ApiController
     public function __construct(PaymentInterface $paymentInterface)
     {
         $this->paymentRepository = $paymentInterface;
-        $this->load = [];
+        $this->load = [
+            'company',
+            'invoice',
+            'customer'
+        ];
     }
     /**
      * Display a listing of the resource.

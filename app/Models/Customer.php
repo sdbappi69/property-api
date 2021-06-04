@@ -70,4 +70,8 @@ class Customer extends BaseModel
     {
         return $this->hasMany(Invoice::class, 'customer_id');
     }
+    public function payment()
+    {
+        return $this->hasMany(Payment::class, 'invoice_number_id', 'id');
+    }
 }

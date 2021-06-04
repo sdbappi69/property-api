@@ -64,7 +64,7 @@ class Invoice extends BaseModel
     ];
     public function payment()
     {
-        return $this->hasMany(Payment::class, 'company_id', 'id');
+        return $this->hasMany(Payment::class, 'invoice_number_id', 'id');
     }
     public function company()
     {
@@ -72,6 +72,6 @@ class Invoice extends BaseModel
     }
     public function customer()
     {
-        return $this->belongsTo('App\Models\Customer', 'company_id', 'id');
+        return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');
     }
 }

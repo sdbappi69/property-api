@@ -67,5 +67,12 @@ class Payment extends BaseModel
     {
         return $this->belongsTo(Invoice::class);
     }
-
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');
+    }
 }
