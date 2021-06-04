@@ -115,6 +115,6 @@ class InvoiceController extends ApiController
         if ($this->invoiceRepository->delete($uuid)) {
             return $this->respondWithSuccess('Success !! Invoice has been deleted');
         }
-        return $this->respondNotFound('Invoice not deleted');
+        return $this->respondNotFound('Invoice Category not deleted');
     }
 }

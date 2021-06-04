@@ -15,7 +15,9 @@ class CompanyController extends ApiController
     public function __construct(CompanyInterface $companyInterface)
     {
         $this->companyRepository = $companyInterface;
-        $this->load = [];
+        $this->load = [
+            // $this->companyRepository->getAll('customer')
+        ];
     }
     /**
      * Display a listing of the resource.

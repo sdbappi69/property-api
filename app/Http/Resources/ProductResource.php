@@ -20,6 +20,8 @@ class ProductResource extends JsonResource
             'product_code'                      => $this->product_code,
             'product_price'                     => $this->product_price,
             'product_description'               => $this->product_description,
+            'discount'                          => $this->discount,
+            'total_price'                       => round(( 1 - ($this->discount/100)) * $this->product_price,2),
             'product_categories_id'             => $this->product_categories_id,
             'company_id'                        => $this->company_id,
             'created_at'                        => $this->created_at,

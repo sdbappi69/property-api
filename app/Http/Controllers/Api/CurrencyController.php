@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Invoicer\Repositories\Contracts\CurrencyInterface;
 use Illuminate\Http\Request;
-use App\Models\Currency;
 use Illuminate\Support\Facades\DB;
 
 class CurrencyController extends ApiController

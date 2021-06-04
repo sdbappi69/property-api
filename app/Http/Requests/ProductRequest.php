@@ -32,6 +32,7 @@ class ProductRequest extends BaseRequest
                         'product_description'            => 'required',
                         'product_categories_id'          => 'required',
                         'company_id'                     => 'required',
+                        'discount'                       => 'required'
                     ];
                     break;
                 }
@@ -45,6 +46,7 @@ class ProductRequest extends BaseRequest
                         'product_description'            => 'required',
                         'product_categories_id'          => 'required',
                         'company_id'                     => 'required',
+                        'discount'                       => 'required'
                     ];
                     break;
                 }

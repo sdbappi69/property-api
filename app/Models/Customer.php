@@ -62,5 +62,8 @@ class Customer extends BaseModel
             'customers.email' => 1,
         ]
     ];
-
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
 }
