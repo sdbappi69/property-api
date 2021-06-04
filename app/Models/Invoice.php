@@ -64,7 +64,14 @@ class Invoice extends BaseModel
     ];
     public function payment()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class, 'company_id', 'id');
     }
-
+    public function company()
+    {
+        return $this->belongsTo('App\Models\Company', 'company_id', 'id');
+    }
+    public function customer()
+    {
+        return $this->belongsTo('App\Models\Customer', 'company_id', 'id');
+    }
 }

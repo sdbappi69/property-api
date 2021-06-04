@@ -24,6 +24,7 @@ class CustomerController extends ApiController
         $this->customerRepository = $customerInterface;
         $this->load = [
             'company',
+            'invoice'
         ];
     }
     /**

@@ -18,4 +18,5 @@ class InvoiceRepository extends BaseRepository implements InvoiceInterface {
         $this->model = $model;
     }
 
+
 }

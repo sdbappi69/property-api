@@ -64,6 +64,10 @@ class Customer extends BaseModel
     ];
     public function company()
     {
-        return $this->belongsTo(Company::class, 'company_id');  
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+    public function invoive()
+    {
+        return $this->hasMany(Invoice::class, 'customer_id');
     }
 }

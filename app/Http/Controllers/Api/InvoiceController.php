@@ -15,7 +15,11 @@ class InvoiceController extends ApiController
     public function __construct(InvoiceInterface $invoiceInterface)
     {
         $this->invoiceRepository = $invoiceInterface;
-        $this->load = [];
+        $this->load = [
+            'payment',
+            'company',
+            'customer'
+        ];
     }
     /**
      * Display a listing of the resource.
