@@ -64,5 +64,12 @@ class Currency extends BaseModel
             'currencies.currency'   => 1,
         ]
     ];
-
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

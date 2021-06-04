@@ -85,4 +85,8 @@ class User extends BaseModel implements
     protected $hidden = [
         'password', 'remember_token', 'confirmation_code'
     ];
+    public function company()
+    {
+        return $this->hasMany(Company::class);
+    }
 }

@@ -72,6 +72,14 @@ class Company extends BaseModel
 
     public function customer()
     {
-        return $this->hasMany(Customer::class, 'company_id');
+        return $this->hasMany('App\Models\Customer', 'company_id', 'id')->withTrashed();;
+    }
+    public function currency()
+    {
+        return $this->hasMany(Currency::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

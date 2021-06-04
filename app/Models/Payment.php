@@ -63,6 +63,9 @@ class Payment extends BaseModel
             'payments.invoice_number_id'            => 1
         ]
     ];
-
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 
 }

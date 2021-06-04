@@ -62,6 +62,9 @@ class Invoice extends BaseModel
             'invoices.status'           => 1
         ]
     ];
-
+    public function payment()
+    {
+        return $this->hasMany(Payment::class);
+    }
 
 }

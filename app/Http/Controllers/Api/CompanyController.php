@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyRequest;
 use App\Http\Resources\CompanyResource;
 use App\Invoicer\Repositories\Contracts\CompanyInterface;
+use App\Invoicer\Repositories\Eloquent\CompanyRepository;
 use Illuminate\Http\Request;
 
 class CompanyController extends ApiController
@@ -14,9 +15,10 @@ class CompanyController extends ApiController
 
     public function __construct(CompanyInterface $companyInterface)
     {
+
         $this->companyRepository = $companyInterface;
         $this->load = [
-            // $this->companyRepository->getAll('customer')
+            $this->companyRepository->getAll(['user'])
         ];
     }
     /**

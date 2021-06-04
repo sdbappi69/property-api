@@ -17,5 +17,4 @@ class CompanyRepository extends BaseRepository implements CompanyInterface {
     {
         $this->model = $model;
     }
-
 }
