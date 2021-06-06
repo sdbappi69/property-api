@@ -29,7 +29,10 @@ class InvoicerServiceProvider extends ServiceProvider
         'Expense',
         'Currency',
         'Payment',
-        'Company'
+        'Company',
+        'Role',
+        'Permission',
+        'GeneralSetting'
     ];
 
     /**
