@@ -339,6 +339,7 @@ abstract class BaseRepository {
         return $data;
     }
 
+
     /**
      * @param array $data
      * @return null

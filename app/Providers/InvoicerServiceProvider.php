@@ -20,7 +20,16 @@ class InvoicerServiceProvider extends ServiceProvider
      */
     protected $repositories = [
         'User',
-        'Product'
+        'Customer',
+        'ProductCategory',
+        'Product',
+        'Invoice',
+        'Quotation',
+        'ExpenseCategory',
+        'Expense',
+        'Currency',
+        'Payment',
+        'Company'
     ];
 
     /**

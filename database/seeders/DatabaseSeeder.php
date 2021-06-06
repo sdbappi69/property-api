@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\DB;
 class DatabaseSeeder extends Seeder
 {
     protected $tables = [
-        'users'
+        'users',
+        'currencies'
     ];
 
     protected $seeders = [
-        UsersTableSeeder::class
+        UsersTableSeeder::class,
+        CurrencySeeder::class
     ];
     /**
      * Seed the application's database.
