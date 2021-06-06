@@ -1,9 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\CustomerController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\Product_CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 Route::group(array('prefix' => '/v1'), function () {
     Route::resource('/users', UserController::class);
-    Route::resource('/customers', CustomerController::class);
-    Route::resource('/product/categories', Product_CategoryController::class);
-    Route::resource('/products', ProductController::class);
 });
