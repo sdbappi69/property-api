@@ -128,4 +128,15 @@ class ApiController extends Controller
     {
         return $this->setStatusCode(400)->respondWithError($message);
     }
+
+    /**
+     * Cleans up url variables to eliminate spaces
+     * @param $string
+     * @return array
+     */
+    public function formatFields($string)
+    {
+        return explode(",", preg_replace('/\s*,\s*/', ',', rtrim(trim($string), ',')));
+    }
+
 }
