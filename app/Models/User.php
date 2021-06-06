@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Laravel\Passport\HasApiTokens;
 
 class User extends BaseModel implements
     AuthenticatableContract,
@@ -18,7 +19,7 @@ class User extends BaseModel implements
     CanResetPasswordContract
 
 {
-    use Notifiable,  Authenticatable, Authorizable, CanResetPassword, SearchableTrait;
+    use Notifiable,  Authenticatable, Authorizable, CanResetPassword, SearchableTrait, HasApiTokens;
 
     /**
      * The database table used by the model.
@@ -41,6 +42,7 @@ class User extends BaseModel implements
      * @var array
      */
     protected $fillable = [
+        'role_id',
         'first_name',
         'middle_name',
         'last_name',
@@ -85,6 +87,18 @@ class User extends BaseModel implements
     protected $hidden = [
         'password', 'remember_token', 'confirmation_code'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function company()
     {
         return $this->hasMany(Company::class);

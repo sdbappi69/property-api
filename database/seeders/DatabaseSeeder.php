@@ -9,10 +9,14 @@ class DatabaseSeeder extends Seeder
 {
     protected $tables = [
         'users',
-        'currencies'
+        'currencies',
+        'roles',
+        'permissions'
     ];
 
     protected $seeders = [
+        PermissionSeeder::class,
+        RoleSeeder::class,
         UsersTableSeeder::class,
         CurrencySeeder::class
     ];

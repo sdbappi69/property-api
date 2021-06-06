@@ -8,6 +8,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->delete();
 
         User::create([
+            'role_id' => Role::where('id', '!=', null)->select('id')->first()['id'],
             'email' => 'admin@admin.com',
             'first_name' => 'Admin',
             'last_name' => 'Admin',
