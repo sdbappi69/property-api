@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\GeneralSettingController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\ProductCategoryController;
@@ -36,4 +37,7 @@ Route::group(array('prefix' => '/v1'), function () {
     Route::resource('/expenses', ExpenseController::class);
     Route::resource('/payments', PaymentController::class);
     Route::resource('/companies', CompanyController::class);
+
+    Route::resource('general_settings', GeneralSettingController::class)->except(['create', 'edit'])
+        ->middleware(['scope:test1']);
 });
