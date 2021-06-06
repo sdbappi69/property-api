@@ -26,12 +26,13 @@ class GeneralSettingResource extends JsonResource
             'business_name'                 => $this->business_name,
             'business_type'                 => $this->business_type,
             'email'                         => $this->email,
-            'currency'                      => $this->currency,
             'phone'                         => $this->phone,
             'physical_address'              => $this->physical_address,
             'postal_address'                => $this->postal_address,
             'postal_code'                   => $this->postal_code,
             'logo'                          => $this->logo,
+
+            'default_company'               => $this->default_company,
             'favicon'                       => $this->favicon,
 
             'date_format'                   => $this->date_format,

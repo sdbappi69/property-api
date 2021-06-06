@@ -22,17 +22,15 @@ class GeneralSettingController extends ApiController
     /**
      * @var GeneralSettingInterface
      */
-    protected $generalSettingRepository, $loginProxy;
+    protected $generalSettingRepository;
 
     /**
      * GeneralSettingController constructor.
      * @param GeneralSettingInterface $generalSettingInterface
-     * @param LoginProxy $loginProxy
      */
-    public function __construct(GeneralSettingInterface $generalSettingInterface, LoginProxy $loginProxy)
+    public function __construct(GeneralSettingInterface $generalSettingInterface)
     {
         $this->generalSettingRepository = $generalSettingInterface;
-        $this->loginProxy = $loginProxy;
     }
 
     /**
@@ -173,7 +171,6 @@ class GeneralSettingController extends ApiController
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
         } else {
-            $this->loginProxy->logout();
             return $this->respondWithSuccess('Success !! GeneralSetting has been updated.');
         }
     }
