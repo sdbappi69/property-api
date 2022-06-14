@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Install\InstallController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('install', [InstallController::class, 'index']);
+Route::group(['prefix' => 'install'], function () {
+    Route::get('start', [InstallController::class, 'index']);
+    Route::get('requirements', [InstallController::class, 'requirements']);
+    Route::get('permissions', [InstallController::class, 'permissions']);
+    Route::any('database', [InstallController::class, 'database']);
+    Route::any('installation', [InstallController::class, 'installation']);
+    Route::get('complete', [InstallController::class, 'complete']);
 });

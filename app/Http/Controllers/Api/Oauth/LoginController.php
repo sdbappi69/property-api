@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Api\Oauth;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class LoginController extends ApiController
 {
-
     private $loginProxy;
 
     public function __construct(LoginProxy $loginProxy)
@@ -39,20 +37,10 @@ class LoginController extends ApiController
     }
 
     /**
-     * @return mixed
+     * @param Request $request
      */
-    public function logout()
+    public function logout(Request $request)
     {
         $this->loginProxy->logout();
-        return $this->setStatusCode(204)->respondWithSuccess("Logged out ...");
     }
-
-    /**
-     * Logged in user
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
-     */
-    public function me() {
-        return Auth::user();
-    }
-
 }

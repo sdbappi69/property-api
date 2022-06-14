@@ -1,61 +1,59 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: SD Bappi
+ * Email: sdbappi69@gmail.com
+ * WhatsApp: +8801763456950
+ * Date: 12/28/2020
+ * Time: 8:38 AM
+ */
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
-
 class InvoiceRequest extends BaseRequest
 {
-      /**
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
     public function rules()
     {
+
         $rules = [];
 
-        switch($this->method())
-        {
+        switch ($this->method()) {
             case 'GET':
             case 'DELETE':
-                {
-                    return [];
-                    break;
-                }
+            {
+                return [];
+                break;
+            }
             case 'POST':
-                {
-                    $rules = [
-                        'invoice_number'             => 'required',
-                        'invoice_date'               => 'required',
-                        'due_date'                   => 'required',
-                        'status'                     => 'required',
-                        'note'                       => '',
-                        'product_id'                 => 'required',
-                        'customer_id'                => 'required',
-                        'currency_id'                => 'required',
-                        'company_id'                 => 'required'
-                    ];
-                    break;
-                }
+            {
+                $rules = [
+                    'agent_id' => 'exists:agents,id',
+                    'property_id' => ''
+
+                ];
+
+                break;
+            }
             case 'PUT':
             case 'PATCH':
-                {
-                    $rules = [
-                        'invoice_number'             => 'required',
-                        'invoice_date'               => 'required',
-                        'due_date'                   => 'required',
-                        'status'                     => 'required',
-                        'note'                       => '',
-                        'product_id'                 => 'required',
-                        'customer_id'                => 'required',
-                        'currency_id'                => 'required',
-                        'company_id'                 => 'required'
-                    ];
-                    break;
-                }
-            default:break;
+            {
+                $rules = [
+                    'status' => '',
+                    'updated_on' => ''
+                ];
+                break;
+            }
+            default:
+                break;
         }
+
         return $rules;
+
     }
 }

@@ -49,7 +49,9 @@ class AuthServiceProvider extends ServiceProvider
                 // Remember we use the same login url.
                 // In LoginProxy we fix 'member' as only scope for non admin user.
                 if (!is_null($data)) {
-                    $data['member'] = 'Member';
+                    $data['am-tenant'] = 'am-tenant';
+                    $data['am-landlord'] = 'am-landlord';
+                    $data['view-dashboard'] = 'view-dashboard';
                     Passport::tokensCan($data);
                 }
             }

@@ -35,6 +35,11 @@ class AppSetup extends Command
      */
     public function handle()
     {
+        $this->call('view:clear');
+        $this->call('cache:clear');
+        $this->call('config:clear');
+        $this->call('key:generate');
+
         /**--------------- running migrations - drop all tables and migrate afresh -----------------**/
         $this->call('migrate:fresh', [
             '--force' => 'force',
@@ -54,21 +59,22 @@ class AppSetup extends Command
         /**--------------- setup admin client passport -----------------**/
         $this->call('passport:client', [
             '--password' => true,
-            '--name' => config('app.name') . ' Users Client',
+            '--name' => config('app.name') . ' Admin Client',
             '--provider' => 'users',
         ]);
 
-     /*   $this->call('passport:client', [
-            '--password' => false,
-            '--name' => config('app.name') . ' xxx xxx',
-            '--provider' => 'users',
-        ]);*/
-
-        /**--------------- setup customer client passport -----------------**/
+        /**--------------- setup landlord client passport -----------------**/
         $this->call('passport:client', [
             '--password' => true,
-            '--name' => config('app.name') . ' Customer Client',
-            '--provider' => 'customers',
+            '--name' => config('app.name') . ' Landlord Client',
+            '--provider' => 'landlords',
+        ]);
+
+        /**--------------- setup tenants client passport -----------------**/
+        $this->call('passport:client', [
+            '--password' => true,
+            '--name' => config('app.name') . ' Tenant Client',
+            '--provider' => 'tenants',
         ]);
     }
 }

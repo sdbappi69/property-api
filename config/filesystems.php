@@ -52,6 +52,16 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
         ],
 
+        'reading_templates' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/readings/templates',
+        ],
+
+        'reading_uploads' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/readings/uploads',
+        ],
+
     ],
 
     /*

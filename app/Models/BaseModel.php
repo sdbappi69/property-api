@@ -68,4 +68,7 @@ class BaseModel extends Model{
         $this->attributes['password'] = bcrypt($password);
     }
 
+    protected $hidden = [
+        'password'
+    ];
 }

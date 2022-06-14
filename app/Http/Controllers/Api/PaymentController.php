@@ -1,30 +1,45 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
+ * Date: 6/17/2021
+ * Time: 3:16 PM
+ */
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Events\PaymentReceived;
 use App\Http\Requests\PaymentRequest;
+use App\Http\Requests\PaymentStatusRequest;
 use App\Http\Resources\PaymentResource;
-use App\Invoicer\Repositories\Contracts\PaymentInterface;
+use App\Models\GeneralSetting;
+use App\Rental\Repositories\Contracts\PaymentInterface;
+use App\Rental\Repositories\Contracts\TenantInterface;
+use App\Traits\CommunicationMessage;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends ApiController
 {
-    protected $paymentRepository, $load;
+    protected $paymentRepository, $load, $tenantRepository;
 
-    public function __construct(PaymentInterface $paymentInterface)
+    /**
+     * PaymentController constructor.
+     * @param PaymentInterface $paymentInterface
+     * @param TenantInterface $tenantRepository
+     */
+    public function __construct(PaymentInterface $paymentInterface, TenantInterface $tenantRepository)
     {
         $this->paymentRepository = $paymentInterface;
-        $this->load = [
-            'company',
-            'invoice',
-            'customer'
-        ];
+        $this->tenantRepository = $tenantRepository;
+        $this->load = ['payment_method', 'cancel_user', 'approve_user'];
     }
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return mixed
      */
     public function index(Request $request)
     {
@@ -36,38 +51,32 @@ class PaymentController extends ApiController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param PaymentRequest $request
+     * @return array|mixed
+     * @throws \Exception
      */
     public function store(PaymentRequest $request)
     {
-        $data = $request->all();
-        $save = $this->paymentRepository->create($data);
+        if (!auth()->user()->tokenCan('create-payment'))
+            throw new \Exception('Action is not allowed.');
 
-        if (!is_null($save) && $save['error']) {
-            return $this->respondNotSaved($save['message']);
-        } else {
-            return $this->respondWithSuccess('Success !! Payment has been created.');
+        try {
+            DB::beginTransaction();
+            $newPayment = $this->paymentRepository->create($request->validated());
+            if (!isset($newPayment)) {
+                return $this->respondNotSaved('Not Saved');
+            }
+                DB::commit();
+                return $this->respondWithSuccess('Success !! Payment has been created.');
+        }catch (\Exception $e){
+            DB::rollback();
+            throw new \Exception($e->getMessage());
         }
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $uuid
+     * @return mixed
      */
     public function show($uuid)
     {
@@ -80,45 +89,100 @@ class PaymentController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param PaymentStatusRequest $request
+     * @throws \Exception
      */
-    public function edit($id)
-    {
-        //
-    }
+    public function approve(PaymentStatusRequest $request) {
+        if (!auth()->user()->tokenCan('approve-payment'))
+            throw new \Exception('Action is not allowed.');
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(PaymentRequest $request, $uuid)
-    {
-        $save = $this->paymentRepository->update(array_filter($request->all()), $uuid);
-
-        if (!is_null($save) && $save['error']) {
-            return $this->respondNotSaved($save['message']);
-        } else {
-            return $this->respondWithSuccess('Success !! Payment has been updated.');
+        try
+        {
+            DB::beginTransaction();
+            $data = $request->all();
+            $data['payment_status'] = 'approved';
+            if (auth()->user()) {
+                $data['approved_by'] = auth()->user()->id;
+            }
+            $payment = $this->paymentRepository->getById($data['id']);
+            $this->paymentRepository->update(array_filter($data), $data['id']);
+            if(isset($payment))
+                event(new PaymentReceived($payment));
+            DB::commit();
+            $tenant = $this->tenantRepository->getByID($payment['tenant_id']);
+            CommunicationMessage::send(RECEIVE_PAYMENT, $tenant, $payment);
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw new \Exception($e->getMessage());
         }
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param PaymentStatusRequest $request
+     * @throws \Exception
      */
-    public function destroy($uuid)
-    {
-        if ($this->paymentRepository->delete($uuid)) {
-            return $this->respondWithSuccess('Success !! Payment has been deleted');
+    public function cancel(PaymentStatusRequest $request) {
+        if (!auth()->user()->tokenCan('cancel-payment'))
+            throw new \Exception('Action is not allowed.');
+
+        try
+        {
+            DB::beginTransaction();
+            $data = $request->all();
+            $data['payment_status'] = 'cancelled';
+            if (auth()->user()){
+                $data['cancelled_by'] = auth()->user()->id;
+            }
+            $this->paymentRepository->update(array_filter($data), $data['id']);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw new \Exception($e->getMessage());
         }
-        return $this->respondNotFound('Payment not deleted');
+    }
+
+    /**
+     * @param PaymentStatusRequest $request
+     */
+    public function pending(PaymentStatusRequest $request) {
+        $data = $request->all();
+        $data['payment_status'] = 'pending';
+        $this->paymentRepository->update(array_filter($data), $data['id']);
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function downloadReceipt(Request $request) {
+        $data = $request->all();
+        $uuid = $data['id'];
+
+        $paymentID = $data['id'];
+        $payment = PaymentResource::make($this->paymentRepository->getById($paymentID));
+
+/*        $invoice = Invoice::where('id', $uuid)->get();
+        $invoice = InvoiceResource::collection($invoice);
+        $invoice->map(function($item) {
+            $item['amount_paid'] =  $this->transactionRepository->invoicePaidAmount($item['id']);
+            return $item;
+        });
+        $invoice = $invoice[0];
+        $invoice = InvoiceResource::make($invoice)->toArray($request);*/
+
+        $settings = GeneralSetting::first();
+        $file_path = $settings->logo;
+        $local_path = '';
+        if($file_path != '')
+            $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR .'logos'.DIRECTORY_SEPARATOR. $file_path;
+
+        $settings->logo_url = $local_path;
+
+        $pdf = PDF::loadView('invoices.receipt', compact('payment', 'settings'), compact('local_path'));
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        $pdf->getDomPDF()->set_option("enable_php", true);
+
+        // return view('invoices.invoice', compact('invoice'), compact('local_path'));
+        return $pdf->download('receipt.pdf');
     }
 }

@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 6/6/2021
  * Time: 7:43 AM
  */
@@ -11,8 +11,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\RoleRequest;
 use App\Http\Resources\RoleResource;
-use App\Invoicer\Repositories\Contracts\RoleInterface;
+use App\Models\Role;
+use App\Rental\Repositories\Contracts\RoleInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RoleController extends ApiController
 {
@@ -47,7 +49,7 @@ class RoleController extends ApiController
 
     /**
      * @param RoleRequest $request
-     * @return \Illuminate\Http\JsonResponse|object
+     * @return array
      */
     public function store(RoleRequest $request)
     {
@@ -96,12 +98,31 @@ class RoleController extends ApiController
 
     /**
      * @param $uuid
-     * @return mixed
+     * @return array
+     * @throws \Exception
      */
     public function destroy($uuid)
     {
-        $this->roleRepository->getById($uuid)->permissions()->detach();
-        $this->roleRepository->delete($uuid);
-        return $this->respondWithSuccess('Success !! Role has been deleted');
+        try {
+            DB::beginTransaction();
+            if (auth('api')->check() && auth()->user()->tokenCan('manage-setting')) {
+                $user = auth()->user();
+                $role = Role::with(['permissions', 'users'])->find($uuid);
+                if (isset($role)) {
+                    if (count($role->users) > 0) {
+                        throw new \Exception('Cannot delete. Role has active users.');
+                    } else {
+                        $role->permissions()->detach();
+                        $role->delete();
+                        DB::commit();
+                        return $this->respondWithSuccess('Success !! Role has been deleted.');
+                    }
+                }
+            }
+            throw new \Exception('Action is not allowed.');
+        }catch (\Exception $e){
+            DB::rollback();
+            throw new \Exception($e->getMessage());
+        }
     }
 }

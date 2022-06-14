@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 6/6/2021
  * Time: 7:28 AM
  */
@@ -34,21 +34,6 @@ class GeneralSettingRequest extends BaseRequest
             case 'POST':
             {
                 $rules = [
-                    'business_name'         => 'required',
-                    'business_type'         => '',
-                    'contact_first_name'    => '',
-                    'contact_last_name'     => '',
-                    'currency'              => '',
-                    'phone'                 => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:9,12',
-                    'email'                 => 'nullable|email',
-                    'country'               => '',
-                    'county'                => '',
-                    'town'                  => '',
-                    'physical_address'      => '',
-                    'postal_address'        => '',
-                    'postal_code'           => '',
-                    'logo'                  => '',
-                    'favicon'               => '',
                 ];
 
                 break;

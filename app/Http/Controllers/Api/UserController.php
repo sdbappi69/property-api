@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 5/28/2021
  * Time: 7:51 AM
  */
@@ -11,8 +11,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
-use App\Invoicer\Repositories\Contracts\UserInterface;
+use App\Rental\Repositories\Contracts\UserInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends ApiController
 {
@@ -96,13 +97,27 @@ class UserController extends ApiController
 
     /**
      * @param $uuid
-     * @return mixed
+     * @return array|mixed
+     * @throws \Exception
      */
     public function destroy($uuid)
     {
-        if ($this->userRepository->delete($uuid)) {
-            return $this->respondWithSuccess('Success !! User has been deleted');
+        try {
+            DB::beginTransaction();
+            if (auth('api')->check() && auth()->user()->tokenCan('manage-setting')) {
+                $userID = auth()->user()->id;
+                if ($uuid != $userID) {
+                    $this->userRepository->delete($uuid);
+                    DB::commit();
+                    return $this->respondWithSuccess('Success !! Landlord has been deleted.');
+                }
+                else
+                    throw new \Exception('Error: Cannot delete self.');
+            }
+            throw new \Exception('Action is not allowed.');
+        }catch (\Exception $e){
+            DB::rollback();
+            throw new \Exception($e->getMessage());
         }
-        return $this->respondNotFound('User not deleted');
     }
 }

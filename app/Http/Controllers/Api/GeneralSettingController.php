@@ -1,19 +1,17 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 6/6/2021
  * Time: 7:28 AM
  */
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\OAuth\LoginProxy;
 use App\Http\Requests\GeneralSettingRequest;
 use App\Http\Resources\GeneralSettingResource;
-use App\Invoicer\Repositories\Contracts\GeneralSettingInterface;
-
+use App\Rental\Repositories\Contracts\GeneralSettingInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,7 +38,7 @@ class GeneralSettingController extends ApiController
      */
     public function index(Request $request)
     {
-        $generalSetting = $this->generalSettingRepository->first();
+        $generalSetting = $this->generalSettingRepository->getFirst();
 
         if (!$generalSetting) {
             return null;
@@ -116,6 +114,7 @@ class GeneralSettingController extends ApiController
     public function store(GeneralSettingRequest $request)
     {
         $data = $request->all();
+        $save = $this->generalSettingRepository->create($data);
 
         // Upload logo
         $data['logo'] = null;
@@ -135,8 +134,6 @@ class GeneralSettingController extends ApiController
 
             $data['logo'] = $fileNameToStore;
         }
-
-        $save = $this->generalSettingRepository->create($data);
 
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
@@ -190,30 +187,26 @@ class GeneralSettingController extends ApiController
     /**
      * @param Request $request
      */
-    public function uploadLogo(Request $request)
-    {
+    public function uploadLogo(Request $request) {
         $setting = $this->generalSettingRepository->getFirst();
         $oldLogo = $setting->logo;
 
         $data = $request->all();
 
         // Upload logo
-        if ($request->hasFile('logo')) {
+        if($request->hasFile('logo')) {
             $filenameWithExt = $request->file('logo')->getClientOriginalName();
             // Get just filename
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             // Get just ext
             $extension = $request->file('logo')->getClientOriginalExtension();
             // Filename to store
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
+            $fileNameToStore = $filename.'_'.time().'.'.$extension;
             $path = $request->file('logo')->storeAs('logos', $fileNameToStore);
             $data['logo'] = $fileNameToStore;
-
             $this->generalSettingRepository->update($data, $data['id']);
-
-            if ($oldLogo != '')
-                Storage::delete('logos/' . $oldLogo);
-
+            if($oldLogo != '')
+                Storage::delete('logos/'.$oldLogo);
         }
     }
 
@@ -227,7 +220,7 @@ class GeneralSettingController extends ApiController
         $setting = $this->generalSettingRepository->getById($data['id']);
 
         $file_path = $setting->logo;
-        $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR . 'logos' . DIRECTORY_SEPARATOR . $file_path;
+        $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR .'logos'.DIRECTORY_SEPARATOR. $file_path;
         return response()->file($local_path);
     }
 }

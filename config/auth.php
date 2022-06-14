@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Customer;
+use App\Models\Landlord;
+use App\Models\Tenant;
 
 return [
 
@@ -42,14 +44,17 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
         'api' => [
             'driver' => 'passport',
             'provider' => 'users',
         ],
-        'customers' => [
+        'landlords' => [
             'driver' => 'passport',
-            'provider' => 'customers'
+            'provider' => 'landlords'
+        ],
+        'tenants' => [
+            'driver' => 'passport',
+            'provider' => 'tenants'
         ]
     ],
 
@@ -75,10 +80,14 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-        'customers' => [
+        'landlords' => [
             'driver' => 'eloquent',
-            'model' => Customer::class,
-        ]
+            'model' => Landlord::class,
+        ],
+        'tenants' => [
+            'driver' => 'eloquent',
+            'model' => Tenant::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',

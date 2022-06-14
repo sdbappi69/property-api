@@ -2,124 +2,167 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\InvoiceRequest;
 use App\Http\Resources\InvoiceResource;
-use App\Invoicer\Repositories\Contracts\InvoiceInterface;
+use App\Models\GeneralSetting;
+use App\Models\Invoice;
+use App\Models\LeaseSetting;
+use App\Rental\Repositories\Contracts\InvoiceInterface;
+use App\Rental\Repositories\Contracts\TransactionInterface;
+use App\Rental\Repositories\Contracts\UnitInterface;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends ApiController
 {
-    protected $invoiceRepository, $load;
+    /**
+     * @var InvoiceInterface
+     */
+    protected $invoiceRepository, $load,
+        $accountRepository, $unitRepository, $transactionRepository;
 
-    public function __construct(InvoiceInterface $invoiceInterface)
+    /**
+     * InvoiceController constructor.
+     * @param InvoiceInterface $invoiceInterface
+     * @param UnitInterface $unitRepository
+     * @param TransactionInterface $transactionRepository
+     */
+    public function __construct(InvoiceInterface $invoiceInterface, UnitInterface $unitRepository,
+                                TransactionInterface $transactionRepository)
     {
         $this->invoiceRepository = $invoiceInterface;
-        $this->load = [
-            'payment',
-            'company',
-            'customer',
-            'product'
-        ];
+        $this->unitRepository = $unitRepository;
+        $this->transactionRepository = $transactionRepository;
+        $this->load = [];
     }
+
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index(Request $request)
+    public function index()
     {
         if ($select = request()->query('list')) {
             return $this->invoiceRepository->listAll($this->formatFields($select), []);
         } else
             $data = InvoiceResource::collection($this->invoiceRepository->getAllPaginate($this->load));
+
+        $data->map(function($item) {
+            $item['amount_paid'] =  $this->transactionRepository->invoicePaidAmount($item['id']);
+            return $item;
+        });
+
         return $this->respondWithData($data);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param InvoiceRequest $request
+     * @return array|mixed
+     * @throws \Exception
      */
     public function store(InvoiceRequest $request)
     {
-        $data = $request->all();
-        $save = $this->invoiceRepository->create($data);
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $newInvoice = $this->invoiceRepository->create($data);
 
-        if (!is_null($save) && $save['error']) {
-            return $this->respondNotSaved($save['message']);
-        } else {
+            if (!isset($newInvoice)) {
+                return $this->respondNotSaved('Not Saved');
+            }
+            DB::commit();
             return $this->respondWithSuccess('Success !! Invoice has been created.');
+        }catch (\Exception $e){
+            DB::rollback();
+            throw new \Exception($e->getMessage());
         }
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $uuid
+     * @return mixed
      */
     public function show($uuid)
     {
-        $invoice = $this->invoiceRepository->getById($uuid);
-
+		$invoice = $this->invoiceRepository->getById($uuid, $this->load);
         if (!$invoice) {
             return $this->respondNotFound('Invoice not found.');
         }
-        return $this->respondWithData(new InvoiceResource($invoice));
+		$invoiceResource = InvoiceResource::make($invoice);
+		$invoiceResource['amount_paid']=  $this->transactionRepository->invoicePaidAmount($invoiceResource['id']);
+        return $this->respondWithData($invoiceResource);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param InvoiceRequest $request
+     * @param $id
      */
-    public function edit($id)
+    public function update(InvoiceRequest $request, $id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(InvoiceRequest $request, $uuid)
-    {
-        $save = $this->invoiceRepository->update(array_filter($request->all()), $uuid);
+        $save = $this->invoiceRepository->update($request->all(), $id);
 
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
-        } else {
+        } else
             return $this->respondWithSuccess('Success !! Invoice has been updated.');
-        }
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
      */
-    public function destroy($uuid)
+    public function destroy($id)
     {
-        if ($this->invoiceRepository->delete($uuid)) {
-            return $this->respondWithSuccess('Success !! Invoice has been deleted');
+        return;
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function downloadInvoice(Request $request) {
+        $data = $request->all();
+        $uuid = $data['id'];
+
+        $invoice = Invoice::where('id', $uuid)->get();
+        $invoice = InvoiceResource::collection($invoice);
+        $invoice->map(function($item) {
+            $item['amount_paid'] =  $this->transactionRepository->invoicePaidAmount($item['id']);
+            return $item;
+        });
+        $invoice = $invoice[0];
+        $invoice = InvoiceResource::make($invoice)->toArray($request);
+
+        $settings = GeneralSetting::first();
+        $leaseSettings = LeaseSetting::first();
+        $file_path = $settings->logo;
+        $local_path = '';
+        if($file_path != '')
+            $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR .'logos'.DIRECTORY_SEPARATOR. $file_path;
+
+        $settings->logo_url = $local_path;
+        $settings->invoice_footer = $leaseSettings->invoice_footer;
+
+        $pdf = PDF::loadView('invoices.invoice', compact('invoice', 'settings'), compact('local_path'));
+        PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
+        $pdf->getDomPDF()->set_option("enable_php", true);
+
+       // return view('invoices.invoice', compact('invoice'), compact('local_path'));
+        return $pdf->download('invoice.pdf');
+    }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     */
+    public function search(Request $request)
+    {
+        $data = $request->all();
+        if (array_key_exists('filter', $data)) {
+            $filter = $data['filter'];
+            return $this->invoiceRepository->search($filter);
         }
-        return $this->respondNotFound('Invoice Category not deleted');
+        return [];
     }
 }

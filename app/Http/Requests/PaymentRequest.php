@@ -26,15 +26,18 @@ class PaymentRequest extends BaseRequest
             case 'POST':
                 {
                     $rules = [
-                        'date'                              => 'required',
-                        'amount'                            => 'required',
-                        'note'                              => '',
-                        'payment_method'                    => 'required',
-                        'transaction_number'                => '',
-                        'invoice_number_id'                 => 'required',
-                        'customer_id'                       => 'required',
-                        'currency_id'                       => 'required',
-                        'company_id'                        => 'required'
+                        'agent_id'          => '',
+                        'payment_method_id' => 'required',
+                        'currency_id'       => '',
+                        'tenant_id'         => 'required|exists:tenants,id',
+                        'lease_id'          => 'required|exists:leases,id',
+                        'lease_number'      => 'required',
+                        'property_id'       => 'exists:properties,id',
+                        'payment_date'      => 'required',
+                        'amount'            => 'required|numeric|min:0|not_in:0',
+                        'notes'             => '',
+                        'paid_by'           => '',
+                        'reference_number'  => ''
                     ];
                     break;
                 }
@@ -42,14 +45,6 @@ class PaymentRequest extends BaseRequest
             case 'PATCH':
                 {
                     $rules = [
-                        'date'                              => 'required',
-                        'amount'                            => 'required',
-                        'note'                              => '',
-                        'payment_method'                    => 'required',
-                        'transaction_number'                => '',
-                        'invoice_number_id'                 => 'required',
-                        'customer_id'                       => 'required',
-                        'currency_id'                       => 'required'
                     ];
                     break;
                 }

@@ -1,0 +1,14 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
+ * Date: 6/17/2021
+ * Time: 3:13 PM
+ */
+
+namespace App\Rental\Repositories\Contracts;
+
+interface TenantSettingInterface extends BaseInterface
+{
+}

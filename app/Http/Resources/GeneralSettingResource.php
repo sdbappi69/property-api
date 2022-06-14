@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 6/6/2021
  * Time: 7:28 AM
  */
@@ -23,16 +23,17 @@ class GeneralSettingResource extends JsonResource
     {
         return [
             'id'                            => $this->id,
-            'business_name'                 => $this->business_name,
-            'business_type'                 => $this->business_type,
+            'company_name'                  => $this->company_name,
+            'company_type'                  => $this->company_type,
             'email'                         => $this->email,
             'phone'                         => $this->phone,
             'physical_address'              => $this->physical_address,
             'postal_address'                => $this->postal_address,
+            'website_url'                	=> $this->website_url,
             'postal_code'                   => $this->postal_code,
             'logo'                          => $this->logo,
 
-            'default_company'               => $this->default_company,
+            'currency'                      => $this->currency,
             'favicon'                       => $this->favicon,
 
             'date_format'                   => $this->date_format,
@@ -45,6 +46,9 @@ class GeneralSettingResource extends JsonResource
             'amount_thousand_separators'    => $this->amount_thousand_separators,
             'amount_decimal_separators'     => $this->amount_decimal_separators,
             'amount_decimals'               => $this->amount_decimals,
+
+            'theme'                         => $this->theme,
+            'language'                      => $this->language,
 
             'created_at'                    => $this->created_at,
             'updated_at'                    => $this->updated_at

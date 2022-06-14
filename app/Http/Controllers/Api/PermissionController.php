@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 6/6/2021
  * Time: 7:43 AM
  */
@@ -11,8 +11,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\PermissionRequest;
 use App\Http\Resources\PermissionResource;
-use App\Invoicer\Repositories\Contracts\PermissionInterface;
+use App\Rental\Repositories\Contracts\PermissionInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PermissionController extends ApiController
 {
@@ -51,13 +52,7 @@ class PermissionController extends ApiController
      */
     public function store(PermissionRequest $request)
     {
-        $save = $this->permissionRepository->create($request->all());
-
-        if (!is_null($save) && $save['error']) {
-            return $this->respondNotSaved($save['message']);
-        } else {
-            return $this->respondWithSuccess('Success !! Permission has been created.');
-        }
+        return $this->respondNotSaved('Not allowed');
     }
 
     /**
@@ -76,16 +71,24 @@ class PermissionController extends ApiController
     /**
      * @param PermissionRequest $request
      * @param $uuid
-     * @return mixed
+     * @return array
+     * @throws \Exception
      */
     public function update(PermissionRequest $request, $uuid)
     {
-        $save = $this->permissionRepository->update($request->all(), $uuid);
-
-        if (!is_null($save) && $save['error']) {
-            return $this->respondNotSaved($save['message']);
-        } else
+        try {
+            DB::beginTransaction();
+            $doNotUpdate = [
+                'name' => 1
+            ];
+            $data = array_diff_key($request->validated(), $doNotUpdate);
+            $this->permissionRepository->update(array_filter($data), $uuid);
+            DB::commit();
             return $this->respondWithSuccess('Success !! Permission has been updated.');
+        }catch (\Exception $e){
+            DB::rollback();
+            throw new \Exception($e->getMessage());
+        }
     }
 
     /**
@@ -94,9 +97,6 @@ class PermissionController extends ApiController
      */
     public function destroy($uuid)
     {
-        if ($this->permissionRepository->delete($uuid)) {
-            return $this->respondWithSuccess('Success !! Permission has been deleted');
-        }
-        return $this->respondNotFound('Permission not deleted');
+        return $this->respondNotSaved('Not allowed');
     }
 }

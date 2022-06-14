@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 6/6/2021
  * Time: 7:39 AM
  */
@@ -35,7 +35,7 @@ class RoleRequest extends BaseRequest
                 $rules = [
                     'name'          => 'required|unique:roles,name,NULL,id,deleted_at,NULL',
                     'display_name'  => 'required|unique:roles,display_name,NULL,id,deleted_at,NULL',
-                    'description'   => '',
+                    'description'   => 'nullable',
                     'permissions'   => '',
                 ];
 
@@ -54,6 +54,7 @@ class RoleRequest extends BaseRequest
                         ->where(function ($query) {
                             $query->where('deleted_at', NULL);
                         })],
+                    'description'   => 'nullable',
                 ];
                 break;
             }

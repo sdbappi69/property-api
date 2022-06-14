@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserRequest extends BaseRequest
@@ -26,7 +28,6 @@ class UserRequest extends BaseRequest
             case 'POST':
                 {
                     $rules = [
-                        'branch_id'             => 'required|exists:branches,id',
                         'first_name'            => 'required',
                         'middle_name'           => '',
                         'last_name'             => 'required',
@@ -38,6 +39,7 @@ class UserRequest extends BaseRequest
                         'city'                  => '',
                         'country'               => '',
                         'role_id'               => 'required|exists:roles,id',
+                        'phone'                 => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|unique:users,phone,NULL,id,deleted_at,NULL',
                         'email'                 => 'email|required|unique:users,email,NULL,id,deleted_at,NULL',
                         'password'              => 'required|min:3|confirmed',
                         'password_confirmation' => 'required_with:password'
@@ -49,7 +51,6 @@ class UserRequest extends BaseRequest
             case 'PATCH':
                 {
                     $rules = [
-                        'branch_id'             => 'required|exists:branches,id',
                         'first_name'            => '',
                         'middle_name'           => '',
                         'last_name'             => 'required',
@@ -59,14 +60,24 @@ class UserRequest extends BaseRequest
                         'physical_address'      => '',
                         'city'                  => '',
                         'country'               => '',
-                        'phone'                 => '',
                         'role_id'               => 'required|exists:roles,id',
-                        'email'                 => ['required', Rule::unique('users')->ignore($this->user, 'id')
+                        'phone' => ['nullable', 'regex:/^([0-9\s\-\+\(\)]*)$/',
+                            Rule::unique('users')->ignore($this->user, 'id')
+                                ->where(function ($query) {
+                                    $query->where('deleted_at', NULL);
+                                })],
+                        'password'              => 'nullable|min:3|confirmed',
+                        'password_confirmation' => 'required_with:password',
+
+                        'email' => ['required', 'email', Rule::unique('users')->ignore($this->user, 'id')
                             ->where(function ($query) {
                                 $query->where('deleted_at', NULL);
                             })],
-                        'password'              => 'nullable|min:3|confirmed',
-                        'password_confirmation' => 'required_with:password'
+                        'current_password' => ['nullable', 'required_with:password', function ($attribute, $value, $fail) {
+                            if (!Hash::check($value, Auth::user()->password)) {
+                                return $fail(__('The current password is incorrect.'));
+                            }
+                        }],
                     ];
                     break;
                 }

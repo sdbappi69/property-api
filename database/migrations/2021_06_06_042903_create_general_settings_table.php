@@ -19,11 +19,12 @@ class CreateGeneralSettingsTable extends Migration
             $table->string('id', 36)->primary()->unique();
             $table->string('company_name');
             $table->string('company_type')->nullable();
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('currency')->nullable();
             $table->string('phone')->nullable();
             $table->string('physical_address')->nullable();
             $table->string('postal_address')->nullable();
+            $table->string('website_url')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('logo')->nullable();
             $table->string('favicon')->nullable();
@@ -32,6 +33,9 @@ class CreateGeneralSettingsTable extends Migration
             $table->string('amount_thousand_separator')->nullable();
             $table->string('amount_decimal_separator')->nullable();
             $table->string('amount_decimal')->nullable();
+
+            $table->string('theme')->nullable();
+            $table->string('language')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

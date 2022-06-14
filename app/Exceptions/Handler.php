@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Laravel\Passport\Exceptions\MissingScopeException;
 use Laravel\Passport\Exceptions\OAuthServerException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -61,7 +62,18 @@ class Handler extends ExceptionHandler
      * @param Throwable $e
      * @return JsonResponse
      */
-    public function handleException( Throwable $e) {
+    public function handleException(Throwable $e) {
+
+        if ($e instanceof AccessDeniedHttpException) {
+
+            return response()->json(
+                [
+                    'error'         => true,
+                    'message'       => $e->getMessage(),
+                    'status_code'   => 403
+                ], 403);
+        }
+
 
         if ($e instanceof AuthenticationException) {
 

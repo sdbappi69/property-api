@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 5/28/2021
  * Time: 7:51 AM
  */
@@ -35,7 +35,8 @@ class ApiController extends Controller
         return $this->statusCode;
     }
 
-     /**
+
+    /**
      * @param $data
      * @return mixed
      */
@@ -45,6 +46,7 @@ class ApiController extends Controller
             ->response()
             ->setStatusCode($this->getStatusCode());
     }
+
 
     /**
      * @param string $message
@@ -58,26 +60,9 @@ class ApiController extends Controller
             'status_code'   => $this->getStatusCode()
         ];
 
-        return (Response::json($data))->$this->setStatusCode($this->getStatusCode());
+        return (Response::json($data))->setStatusCode($this->getStatusCode());
     }
 
-    /**
-     * @param string $message
-     * @return \Illuminate\Http\JsonResponse|object
-     */
-    public function respondWithSuccess($message = 'Success !!')
-    {
-        $data = [
-            'error'         => false,
-            'message'       => $message,
-            'status_code'   => $this->getStatusCode()
-        ];
-
-        return response()->json([
-            $data
-        ])->setStatusCode($this->getStatusCode());
-       // return (\Response::json($data))->setStatusCode($this->getStatusCode());
-    }
 
     /**
      * When a missing resource is requested
@@ -127,6 +112,21 @@ class ApiController extends Controller
     public function respondNotSaved($message = "Not Saved !")
     {
         return $this->setStatusCode(400)->respondWithError($message);
+    }
+
+    /**
+     * @param string $message
+     * @return array
+     */
+    public function respondWithSuccess($message = 'Success !!')
+    {
+        $data = [
+            'error'         => false,
+            'message'       => $message,
+            'status_code'   => $this->getStatusCode()
+        ];
+
+        return (\Response::json($data))->setStatusCode($this->getStatusCode());
     }
 
     /**

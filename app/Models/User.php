@@ -57,6 +57,7 @@ class User extends BaseModel implements
         'postal_address',
         'physical_address',
         'city',
+        'state',
         'country',
 
         'created_by',
@@ -94,13 +95,5 @@ class User extends BaseModel implements
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function company()
-    {
-        return $this->hasMany(Company::class);
     }
 }

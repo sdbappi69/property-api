@@ -1,8 +1,8 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Kevin G. Mungai
- * WhatsApp: +254724475357
+ * User: SD Bappi
+ * WhatsApp: +8801763456950
  * Date: 6/6/2021
  * Time: 7:27 AM
  */
@@ -34,23 +34,23 @@ class GeneralSetting extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'business_name',
+        'company_name',
         'business_type',
         'email',
         'currency',
         'phone',
-        //'country',
-        //'county',
-        //'town',
         'physical_address',
         'postal_address',
+        'website_url',
         'postal_code',
         'logo',
         'favicon',
         'date_format',
         'amount_thousand_separator',
         'amount_decimal_separator',
-        'amount_decimal'
+        'amount_decimal',
+        'theme',
+        'language'
     ];
 
     /**
@@ -67,8 +67,7 @@ class GeneralSetting extends BaseModel
          * @var array
          */
         'columns' => [
-            'general_settings.business_name' => 2,
-            'general_settings.business_type' => 1,
+            'general_settings.company_name' => 1
         ]
     ];
 }
