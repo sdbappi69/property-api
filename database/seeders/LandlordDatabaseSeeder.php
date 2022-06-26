@@ -21,11 +21,15 @@ class LandlordDatabaseSeeder extends Seeder
 
         DB::table('landlords')->delete();
 
-        Landlord::create([
-            'email' => 'landlord@landlord.com',
-            'first_name' => 'Landlord',
-            'last_name' => 'Landlord',
-            'password' => 'landlord',
-        ]);
+        Landlord::factory()->count(500)->create();
+
+        $this->command->line('Done 500 !');
+
+//        Landlord::create([
+//            'email' => 'landlord@landlord.com',
+//            'first_name' => 'Landlord',
+//            'last_name' => 'Landlord',
+//            'password' => 'landlord',
+//        ]);
     }
 }

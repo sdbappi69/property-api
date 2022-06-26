@@ -13,6 +13,7 @@ namespace App\Models;
 use App\Traits\SearchableTrait;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -28,6 +29,7 @@ class Landlord extends BaseModel implements
 
 {
     use HasApiTokens, Notifiable, Authenticatable, Authorizable, CanResetPassword, SearchableTrait;
+    use HasFactory;
 
     /**
      * The database table used by the model.
