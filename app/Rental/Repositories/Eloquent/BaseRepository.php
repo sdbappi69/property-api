@@ -2,6 +2,7 @@
 
 namespace App\Rental\Repositories\Eloquent;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\Paginator;
@@ -11,9 +12,10 @@ use Illuminate\Http\Request;
  * Class BaseRepository
  * @package App\Sproose\Repositories\Eloquent
  */
-abstract class BaseRepository {
+abstract class BaseRepository
+{
 
-    protected $orderBy  = array('updated_at', 'desc');
+    protected $orderBy = array('updated_at', 'desc');
 
     protected $model, $transformer;
 
@@ -21,43 +23,49 @@ abstract class BaseRepository {
      * Set number of records to return
      * @return int
      */
-    public function limit(){
-        return (int)(request()->query('limit')) ? : 5;
+    public function limit()
+    {
+        return (int)(request()->query('limit')) ?: 5;
     }
 
     /**
      * @return string
      */
-    public function sortField () {
-        return (string)(request()->query('sortField')) ? : 'id';
+    public function sortField()
+    {
+        return (string)(request()->query('sortField')) ?: 'id';
     }
 
     /**
      * @return string
      */
-    public function sortDirection() {
-        return (string)(request()->query('sortDirection')) ? : 'desc';
+    public function sortDirection()
+    {
+        return (string)(request()->query('sortDirection')) ?: 'desc';
     }
 
     /**
      * @return string
      */
-    public function searchFilter() {
-        return (string)(request()->query('filter')) ? : '';
+    public function searchFilter()
+    {
+        return (string)(request()->query('filter')) ?: '';
     }
 
     /**
      * @return string
      */
-    public function whereField() {
-        return (string)(request()->query('whereField')) ? : '';
+    public function whereField()
+    {
+        return (string)(request()->query('whereField')) ?: '';
     }
 
     /**
      * @return string
      */
-    public function whereValue() {
-        return (string)(request()->query('whereValue')) ? : '';
+    public function whereValue()
+    {
+        return (string)(request()->query('whereValue')) ?: '';
     }
 
     /**
@@ -65,7 +73,8 @@ abstract class BaseRepository {
      * @param array $load
      * @return mixed
      */
-    public function search($searchFilter, $load = array()) {
+    public function search($searchFilter, $load = array())
+    {
         return $this->model->with($load)->search($searchFilter, null, true, true)
             ->get();
     }
@@ -74,7 +83,8 @@ abstract class BaseRepository {
      * @param array $load
      * @return mixed
      */
-    public function getAllNoSearchPaginate($load = array()) {
+    public function getAllNoSearchPaginate($load = array())
+    {
         return $this->model
             ->with($load)
             ->orderBy($this->sortField(), $this->sortDirection())
@@ -94,25 +104,39 @@ abstract class BaseRepository {
      * @param array $load
      * @return mixed
      */
-    public function getAllPaginate($load = array()){
+    public function getAllPaginate($load = array())
+    {
+        $query = $this->model->query();
 
-        if (strlen ($this->whereField()) > 0) {
-            if(strlen ($this->whereValue()) < 1) {
-                return $this->model
+        if (request()->filled('startDate') or request()->filled('endDate')) {
+            //dd($this->model->getTable()); // get table
+            $startDate = request()->filled('startDate') ? request('startDate') : Carbon::today();
+            $endDate = request()->filled('endDate') ? request('endDate') : Carbon::today();
+            $query->whereBetween('created_at', [
+                Carbon::parse($startDate)->startOfDay(),
+                Carbon::parse($endDate)->endOfDay(),
+            ]);
+        }
+        if (request()->filled('confirmed_status')) {
+            $query->where('confirmed', request('confirmed_status'));
+        }
+        if (strlen($this->whereField()) > 0) {
+            if (strlen($this->whereValue()) < 1) {
+                return $query
                     ->with($load)
                     ->whereNull($this->whereField())
                     ->search($this->searchFilter(), null, true, true)
                     ->orderBy($this->sortField(), $this->sortDirection())
                     ->paginate($this->limit());
             }
-            return $this->model
+            return $query
                 ->with($load)
                 ->where($this->whereField(), $this->whereValue())
                 ->search($this->searchFilter(), null, true, true)
                 ->orderBy($this->sortField(), $this->sortDirection())
                 ->paginate($this->limit());
-        }else {
-            return $this->model->search($this->searchFilter(), null, true, true)
+        } else {
+            return $query->search($this->searchFilter(), null, true, true)
                 ->with($load)
                 ->orderBy($this->sortField(), $this->sortDirection())
                 ->paginate($this->limit());
@@ -125,17 +149,19 @@ abstract class BaseRepository {
      * @param array $load
      * @return array
      */
-    public function listAll($select, $load = array()) {
+    public function listAll($select, $load = array())
+    {
 
         array_push($select, 'id');
 
         $data = [];
-        try{
-            if($load){
-                $data =  $this->model->with($load)->get($select);
-            }else
-                $data =  $this->model->get($select);
-        }catch(\Exception $e){}
+        try {
+            if ($load) {
+                $data = $this->model->with($load)->get($select);
+            } else
+                $data = $this->model->get($select);
+        } catch (\Exception $e) {
+        }
 
         return $data;
     }
@@ -149,8 +175,7 @@ abstract class BaseRepository {
      */
     public function getById($id, $load = array())
     {
-        if(!empty($load))
-        {
+        if (!empty($load)) {
             return $this->model->with($load)->find($id);
         }
         return $this->model->find($id);
@@ -213,7 +238,7 @@ abstract class BaseRepository {
      */
     public function getByIds($ids = array(), $load = array())
     {
-        $query =  $this->model->with($load)->whereIn('id', $ids);
+        $query = $this->model->with($load)->whereIn('id', $ids);
         return $query->paginate($this->limit());
     }
 
@@ -241,29 +266,29 @@ abstract class BaseRepository {
     public function getManyWhere($field, $value, $load = array())
     {
         //sort
-    /*    $sortDirection = \Request::input('sort_direction') ?: 'ASC';
+        /*    $sortDirection = \Request::input('sort_direction') ?: 'ASC';
 
-        if( null!=$this->transformer )
-            $sortProperty = $this->transformer->reverse(\Request::input('sort_property'));
+            if( null!=$this->transformer )
+                $sortProperty = $this->transformer->reverse(\Request::input('sort_property'));
 
-        if(isset($sortProperty) && $sortProperty != false)
-        {
-            $data = $this->model->with($load)->whereIn($field, $values)->orderBy($sortProperty, $sortDirection)->paginate($this->limit());
-        }else
-            $data =  $this->model->with($load)->whereIn($field, $values)->paginate($this->limit());
+            if(isset($sortProperty) && $sortProperty != false)
+            {
+                $data = $this->model->with($load)->whereIn($field, $values)->orderBy($sortProperty, $sortDirection)->paginate($this->limit());
+            }else
+                $data =  $this->model->with($load)->whereIn($field, $values)->paginate($this->limit());
 
-        return $data;*/
+            return $data;*/
 
-       /* return $this->model
-            ->with($load)
-            ->where($field, $value)
-            ->search($this->searchFilter(), null, true, true)
-            ->orderBy($this->sortField(), $this->sortDirection())
-            ->paginate($this->limit());*/
+        /* return $this->model
+             ->with($load)
+             ->where($field, $value)
+             ->search($this->searchFilter(), null, true, true)
+             ->orderBy($this->sortField(), $this->sortDirection())
+             ->paginate($this->limit());*/
 
 
-        if (strlen ($this->whereField()) > 0) {
-            if(strlen ($this->whereValue()) < 1) {
+        if (strlen($this->whereField()) > 0) {
+            if (strlen($this->whereValue()) < 1) {
                 return $this->model
                     ->with($load)
                     ->where($field, $value)
@@ -279,7 +304,7 @@ abstract class BaseRepository {
                 ->search($this->searchFilter(), null, true, true)
                 ->orderBy($this->sortField(), $this->sortDirection())
                 ->paginate($this->limit());
-        }else {
+        } else {
             return $this->model->search($this->searchFilter(), null, true, true)
                 ->with($load)
                 ->where($field, $value)
@@ -296,15 +321,15 @@ abstract class BaseRepository {
      */
     public function getFiltered($filters, $pagination = array(), $load = array())
     {
-        if(isset($pagination) && array_key_exists('limit', $pagination)){
+        if (isset($pagination) && array_key_exists('limit', $pagination)) {
             $limit = $pagination['limit'];
-        }else{
+        } else {
             $limit = \Request::input('limit') ?: 10;
         }
 
-        if(isset($pagination) && array_key_exists('page', $pagination)){
+        if (isset($pagination) && array_key_exists('page', $pagination)) {
             $page = $pagination['page'];
-        }else
+        } else
             $page = 1;
 
         $data = $this->model->with($load);
@@ -329,12 +354,12 @@ abstract class BaseRepository {
     private function applyFilter($filter, $data)
     {
         $whereOperators = [
-            'eq'   => '=',
-            'neq'  => '!=',
-            'gt'   => '>',
-            'gte'  => '>=',
-            'lt'   => '<',
-            'lte'  => '<=',
+            'eq' => '=',
+            'neq' => '!=',
+            'gt' => '>',
+            'gte' => '>=',
+            'lt' => '<',
+            'lte' => '<=',
             'like' => 'LIKE',
         ];
 
@@ -367,9 +392,9 @@ abstract class BaseRepository {
      */
     public function create(array $data)
     {
-        try{
+        try {
             return $this->model->create($data);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             report($exception);
         }
         return null;
@@ -382,17 +407,17 @@ abstract class BaseRepository {
      */
     public function update(array $data, $id)
     {
-        try{
+        try {
             $record = $this->model->find($id);
 
-            if(is_null($record))
+            if (is_null($record))
                 throw new ModelNotFoundException('Record not found');
 
-            if(isset($record)){
+            if (isset($record)) {
                 return $record->update($data);
             }
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             report($exception);
         }
         return null;
@@ -405,9 +430,9 @@ abstract class BaseRepository {
      */
     public function delete($id)
     {
-        try{
+        try {
             return $this->model->destroy($id);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             report($exception);
         }
         return false;
@@ -429,8 +454,7 @@ abstract class BaseRepository {
 
     public function first($load = array())
     {
-        if(!empty($load))
-        {
+        if (!empty($load)) {
             return $this->model->with($load)->first();
         }
         return $this->model->first();
