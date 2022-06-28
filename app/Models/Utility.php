@@ -11,10 +11,12 @@
 namespace App\Models;
 
 use App\Traits\SearchableTrait;
+use App\Traits\StatusModelTrait;
 
 class Utility extends BaseModel
 {
     use SearchableTrait;
+    use StatusModelTrait;
     /**
      * The database table used by the model.
      *

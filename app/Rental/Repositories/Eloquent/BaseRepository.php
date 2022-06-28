@@ -120,6 +120,9 @@ abstract class BaseRepository
         if (request()->filled('confirmed_status')) {
             $query->where('confirmed', request('confirmed_status'));
         }
+        if (request()->filled('status')) {
+            $query->where('status', request('status'));
+        }
         if (strlen($this->whereField()) > 0) {
             if (strlen($this->whereValue()) < 1) {
                 return $query

@@ -12,11 +12,13 @@ namespace App\Models;
 
 use App\Traits\PropertyAccountsSetup;
 use App\Traits\SearchableTrait;
+use App\Traits\StatusModelTrait;
 use Illuminate\Support\Collection;
 
 class Property extends BaseModel
 {
     use SearchableTrait, PropertyAccountsSetup;
+    use StatusModelTrait;
     /**
      * The database table used by the model.
      *

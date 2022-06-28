@@ -11,6 +11,7 @@
 namespace App\Models;
 
 use App\Traits\SearchableTrait;
+use App\Traits\StatusModelTrait;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -28,6 +29,7 @@ class Tenant extends BaseModel implements
 
 {
     use HasApiTokens, Notifiable, Authenticatable, Authorizable, CanResetPassword, SearchableTrait;
+    use StatusModelTrait;
 
     /**
      * The database table used by the model.

@@ -23,14 +23,16 @@ class UtilityResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'                    => $this->id,
+            'id' => $this->id,
 
-            'utility_name'          =>  $this->utility_name,
-            'utility_display_name'  =>  $this->utility_display_name,
-            'utility_description'   =>  $this->utility_description,
+            'utility_name' => $this->utility_name,
+            'utility_display_name' => $this->utility_display_name,
+            'utility_description' => $this->utility_description,
+            'status' => $this->status,
+            'status_title' => $this->status_title,
 
-            'created_at'            => $this->created_at,
-            'updated_at'            => $this->updated_at,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

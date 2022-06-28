@@ -21,9 +21,9 @@ class LandlordDatabaseSeeder extends Seeder
 
         DB::table('landlords')->delete();
 
-        Landlord::factory()->count(500)->create();
+        Landlord::factory()->count(100)->create();
 
-        $this->command->line('Done 500 !');
+        $this->command->line('Done 100 !');
 
 //        Landlord::create([
 //            'email' => 'landlord@landlord.com',

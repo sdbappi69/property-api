@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Oauth;
 
+use App\Models\Role;
 use App\Rental\Repositories\Contracts\GeneralSettingInterface;
 use App\Rental\Repositories\Contracts\LandlordInterface;
 use App\Rental\Repositories\Contracts\RoleInterface;
@@ -33,12 +34,13 @@ class LoginProxy
      * @param LandlordInterface $landlordRepository
      * @param GeneralSettingInterface $generalSettingRepository
      */
-    public function __construct(Application  $app,
-                                UserInterface $userRepository,
-                                RoleInterface $roleRepository,
-                                TenantInterface $tenantRepository,
-                                LandlordInterface $landlordRepository,
-                                GeneralSettingInterface $generalSettingRepository) {
+    public function __construct(Application             $app,
+                                UserInterface           $userRepository,
+                                RoleInterface           $roleRepository,
+                                TenantInterface         $tenantRepository,
+                                LandlordInterface       $landlordRepository,
+                                GeneralSettingInterface $generalSettingRepository)
+    {
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
         $this->generalSettingRepository = $generalSettingRepository;
@@ -56,22 +58,23 @@ class LoginProxy
      * @param $password
      * @return array|null
      */
-    private function getLandlord($email, $password) {
+    private function getLandlord($email, $password)
+    {
         $user = $this->landlordRepository->getViaEmail($email);
         $validPassword = false;
         if (isset($user))
             $validPassword = Hash::check($password, $user->getAuthPassword());
 
         if (!is_null($user) && $validPassword) {
+            $scope = trim($this->checkPermissions(Role::where('name', 'landlord')->first()->id));
             $client = OauthClient::where('password_client', 1)
                 ->where('provider', 'landlords')
                 ->latest()
                 ->first();
-
             return [
-                'user'      => $user,
-                'client'    => $client,
-                'scope'     => 'am-landlord'
+                'user' => $user,
+                'client' => $client,
+                'scope' => 'am-landlord ' . $scope
             ];
         }
         return null;
@@ -82,7 +85,8 @@ class LoginProxy
      * @param $password
      * @return array|null
      */
-    private function getTenant($email, $password) {
+    private function getTenant($email, $password)
+    {
         $user = $this->tenantRepository->getViaEmail($email);
         $validPassword = false;
         if (isset($user))
@@ -95,9 +99,9 @@ class LoginProxy
                 ->first();
 
             return [
-                'user'      => $user,
-                'client'    => $client,
-                'scope'     => 'am-tenant'
+                'user' => $user,
+                'client' => $client,
+                'scope' => 'am-tenant'
             ];
         }
         return null;
@@ -110,7 +114,8 @@ class LoginProxy
      * @param $password
      * @return array|null
      */
-    private function getAdmin($email, $password) {
+    private function getAdmin($email, $password)
+    {
         $user = $this->userRepository->getWhere('email', $email);
         $validPassword = false;
         if (isset($user))
@@ -125,9 +130,9 @@ class LoginProxy
                 ->first();
 
             return [
-                'user'      => $user,
-                'client'    => $client,
-                'scope'     => $scope
+                'user' => $user,
+                'client' => $client,
+                'scope' => $scope
             ];
         }
         return null;
@@ -150,24 +155,24 @@ class LoginProxy
             if (is_null($user))
                 $user = $this->getTenant($email, $password);
 
-            if (!is_null($user)){
+            if (!is_null($user)) {
 
-                $client         = $user['client'];
-                $userDetails    = $user['user'];
-                $scope          = $user['scope'];
+                $client = $user['client'];
+                $userDetails = $user['user'];
+                $scope = $user['scope'];
 
                 $clientId = !is_null($client) ? $client->id : null;
                 $clientSecret = !is_null($client) ? $client->secret : null;
 
                 return $this->proxy([
-                    'username'      => $email,
-                    'password'      => $password,
-                    'scope'         => $scope,
-                    'client_id'     => $clientId,
+                    'username' => $email,
+                    'password' => $password,
+                    'scope' => $scope,
+                    'client_id' => $clientId,
                     'client_secret' => $clientSecret,
-                    'grant_type'    => 'password'
+                    'grant_type' => 'password'
                 ], $userDetails);
-            }else {
+            } else {
                 throw new UnauthorizedHttpException('', Exception::class, null, 0);
             }
         } catch (\Exception $exception) {
@@ -234,7 +239,7 @@ class LoginProxy
             'first_name' => $user ? $user['first_name'] : null,
             'middle_name' => $user ? $user['middle_name'] : null,
             'last_name' => $user ? $user['last_name'] : null,
-             'scope' 		=> $data['scope']
+            'scope' => $data['scope']
         ];
     }
 
@@ -275,10 +280,10 @@ class LoginProxy
         if (auth('api')->check()) {
             $user = auth('api')->user();
             $user->token()->revoke();
-        } elseif (auth('landlords')->check()){
+        } elseif (auth('landlords')->check()) {
             $user = auth('landlords')->user();
             $user->token()->revoke();
-        } elseif (auth('tenants')->check()){
+        } elseif (auth('tenants')->check()) {
             $user = auth('tenants')->user();
             $user->token()->revoke();
         }

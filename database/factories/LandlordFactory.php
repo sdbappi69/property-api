@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Landlord;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
 
 class LandlordFactory extends Factory
 {
@@ -22,7 +23,7 @@ class LandlordFactory extends Factory
             'middle_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'phone' => $this->faker->phoneNumber(),
-            'email' => $this->faker->email(),
+            'email' => $this->faker->unique()->email(),
             'registration_date' => $this->faker->date(),
             'id_number' => random_int(1000000,9999999),
             'city' => $this->faker->city(),
@@ -31,7 +32,7 @@ class LandlordFactory extends Factory
             'postal_address' => $this->faker->postcode(),
             'physical_address' => $this->faker->address(),
             'residential_address' => $this->faker->streetAddress(),
-            'password' => bcrypt('123456'),
+            'password' => '123456',
             'confirmed' => 0,
             'confirmation_code' => null,
             'created_at' => $this->faker->dateTime()

@@ -11,6 +11,7 @@
 namespace App\Models;
 
 use App\Traits\SearchableTrait;
+use App\Traits\StatusModelTrait;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,7 @@ class Landlord extends BaseModel implements
 {
     use HasApiTokens, Notifiable, Authenticatable, Authorizable, CanResetPassword, SearchableTrait;
     use HasFactory;
+    use StatusModelTrait;
 
     /**
      * The database table used by the model.
@@ -109,10 +111,10 @@ class Landlord extends BaseModel implements
     /**
      * @param $registration_date
      */
-  /*  public function setRegistrationDateAttribute($registration_date)
-    {
-        $this->attributes['registration_date'] = date('Y-m-d', strtotime($registration_date));
-    }*/
+    /*  public function setRegistrationDateAttribute($registration_date)
+      {
+          $this->attributes['registration_date'] = date('Y-m-d', strtotime($registration_date));
+      }*/
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

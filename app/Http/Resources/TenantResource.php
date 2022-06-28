@@ -82,6 +82,8 @@ class TenantResource extends JsonResource
             'profile_pic' => $this->profile_pic,
             'password_set' => $this->password_set,
             'confirmed' => $this->confirmed,
+            'status' => $this->status,
+            'status_title' => $this->status_title,
             'confirmation_code' => $this->confirmation_code,
 
             'created_by'=> $this->created_by,
