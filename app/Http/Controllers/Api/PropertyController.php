@@ -37,11 +37,11 @@ class PropertyController extends ApiController
         $this->invoiceRepository = $invoiceRepository;
         $this->load = [
             'property_type',
-			'landlord',
-			'payment_methods',
-			'extra_charges',
-			'late_fees',
-			'utility_costs'
+            'landlord',
+            'payment_methods',
+            'extra_charges',
+            'late_fees',
+            'utility_costs'
         ];
     }
 
@@ -74,109 +74,110 @@ class PropertyController extends ApiController
     {
         try {
             DB::beginTransaction();
-                $data = $request->all();
-                $newProperty = $this->propertyRepository->create($data);
+            $data = $request->all();
+            $data['landlord_id'] = auth()->user()->tokenCan('am-landlord') ? auth()->user()->id : request('landlord_id');
+            $newProperty = $this->propertyRepository->create($data);
 
-                // Payment Methods
-                if(array_key_exists('paymentMethodFields', $data)){
-                    $paymentMethodFields = $data['paymentMethodFields'];
-                    if (isset($paymentMethodFields)){
-                        foreach ($paymentMethodFields as $key => $value){
-                            $newProperty->payment_methods()->attach($value['payment_method_id'],
-                                [
-                                    'payment_method_description'     => $value['payment_method_description']
-                                ]
-                            );
-                        }
+            // Payment Methods
+            if (array_key_exists('paymentMethodFields', $data)) {
+                $paymentMethodFields = $data['paymentMethodFields'];
+                if (isset($paymentMethodFields)) {
+                    foreach ($paymentMethodFields as $key => $value) {
+                        $newProperty->payment_methods()->attach($value['payment_method_id'],
+                            [
+                                'payment_method_description' => $value['payment_method_description']
+                            ]
+                        );
                     }
                 }
+            }
 
-                // Utility cost fields
-                if(array_key_exists('utilityFields', $data)) {
-                    $utilityCostFields = $data['utilityFields'];
-                    if (isset($utilityCostFields)) {
-                        foreach ($utilityCostFields as $key => $value) {
-                            $newProperty->utility_costs()->attach($value['utility_id'],
-                                [
-                                    'utility_unit_cost'     => $value['utility_unit_cost'],
-                                    'utility_base_fee'      => $value['utility_base_fee']
-                                ]
-                            );
-                        }
+            // Utility cost fields
+            if (array_key_exists('utilityFields', $data)) {
+                $utilityCostFields = $data['utilityFields'];
+                if (isset($utilityCostFields)) {
+                    foreach ($utilityCostFields as $key => $value) {
+                        $newProperty->utility_costs()->attach($value['utility_id'],
+                            [
+                                'utility_unit_cost' => $value['utility_unit_cost'],
+                                'utility_base_fee' => $value['utility_base_fee']
+                            ]
+                        );
                     }
                 }
+            }
 
-                // Extra Charges
-                if(array_key_exists('extraChargeFields', $data)){
-                    $extraChargeFields = $data['extraChargeFields'];
-                    if (isset($extraChargeFields)){
-                        foreach ($extraChargeFields as $key => $value){
-                            $newProperty->extra_charges()->attach($value['extra_charge_id'],
-                                [
-                                    'extra_charge_value'        => $value['extra_charge_value'],
-                                    'extra_charge_type'         => $value['extra_charge_type'],
-                                    'extra_charge_frequency'    => $value['extra_charge_frequency']
-                                ]
-                            );
-                        }
+            // Extra Charges
+            if (array_key_exists('extraChargeFields', $data)) {
+                $extraChargeFields = $data['extraChargeFields'];
+                if (isset($extraChargeFields)) {
+                    foreach ($extraChargeFields as $key => $value) {
+                        $newProperty->extra_charges()->attach($value['extra_charge_id'],
+                            [
+                                'extra_charge_value' => $value['extra_charge_value'],
+                                'extra_charge_type' => $value['extra_charge_type'],
+                                'extra_charge_frequency' => $value['extra_charge_frequency']
+                            ]
+                        );
                     }
                 }
+            }
 
-                // Late Fees
-                if(array_key_exists('lateFeeFields', $data)){
-                    $lateFeeFields = $data['lateFeeFields'];
-                    if (isset($lateFeeFields)){
-                        foreach ($lateFeeFields as $key => $value){
-                            $newProperty->late_fees()->attach($value['late_fee_id'],
-                                [
-                                    'grace_period'          => $value['grace_period'],
-                                    'late_fee_value'        => $value['late_fee_value'],
-                                    'late_fee_type'         => $value['late_fee_type'],
-                                    'late_fee_frequency'    => $value['late_fee_frequency']
-                                ]
-                            );
-                        }
+            // Late Fees
+            if (array_key_exists('lateFeeFields', $data)) {
+                $lateFeeFields = $data['lateFeeFields'];
+                if (isset($lateFeeFields)) {
+                    foreach ($lateFeeFields as $key => $value) {
+                        $newProperty->late_fees()->attach($value['late_fee_id'],
+                            [
+                                'grace_period' => $value['grace_period'],
+                                'late_fee_value' => $value['late_fee_value'],
+                                'late_fee_type' => $value['late_fee_type'],
+                                'late_fee_frequency' => $value['late_fee_frequency']
+                            ]
+                        );
                     }
                 }
+            }
 
-                // Property Units
-                if(array_key_exists('units', $data)){
-                    $units = $data['units'];
-                    if (isset($units)){
-                        foreach ($units as $key => $unit){
-                            $unit['property_id'] = $newProperty['id'];
-                            $newUnit = $this->unitRepository->create($unit);
+            // Property Units
+            if (array_key_exists('units', $data)) {
+                $units = $data['units'];
+                if (isset($units)) {
+                    foreach ($units as $key => $unit) {
+                        $unit['property_id'] = $newProperty['id'];
+                        $newUnit = $this->unitRepository->create($unit);
 
-                            // save amenities to pivot
-                            if(array_key_exists('selected_amenities', $unit)){
-                                $selectedAmenitiesData = $unit['selected_amenities'];
-                                if (isset($selectedAmenitiesData)){
-                                    foreach ($selectedAmenitiesData as $amenityKey => $amenity){
-                                        $newUnit->amenities()->attach($amenity);
-                                    }
-                                }
-                            }
-
-                            // save utilities to pivot
-                            if(array_key_exists('selected_utilities', $unit)){
-                                $selectedUtilitiesData = $unit['selected_utilities'];
-                                if (isset($selectedUtilitiesData)){
-                                    foreach ($selectedUtilitiesData as $UtilityKey => $utility){
-                                        $newUnit->utilities()->attach($utility);
-                                    }
+                        // save amenities to pivot
+                        if (array_key_exists('selected_amenities', $unit)) {
+                            $selectedAmenitiesData = $unit['selected_amenities'];
+                            if (isset($selectedAmenitiesData)) {
+                                foreach ($selectedAmenitiesData as $amenityKey => $amenity) {
+                                    $newUnit->amenities()->attach($amenity);
                                 }
                             }
                         }
+
+                        // save utilities to pivot
+                        if (array_key_exists('selected_utilities', $unit)) {
+                            $selectedUtilitiesData = $unit['selected_utilities'];
+                            if (isset($selectedUtilitiesData)) {
+                                foreach ($selectedUtilitiesData as $UtilityKey => $utility) {
+                                    $newUnit->utilities()->attach($utility);
+                                }
+                            }
+                        }
                     }
                 }
-                if (!isset($newProperty)) {
-                    return $this->respondNotSaved('Not Saved');
-                }
+            }
+            if (!isset($newProperty)) {
+                return $this->respondNotSaved('Not Saved');
+            }
             DB::commit();
-                $landlord = $this->landlordRepository->getById($newProperty['landlord_id']);
-                CommunicationMessage::send(NEW_PROPERTY, $landlord, $newProperty);
-                return $this->respondWithSuccess('Success !! Property has been created.');
-        }catch (\Exception $e){
+            $landlord = $this->landlordRepository->getById($newProperty['landlord_id']);
+            CommunicationMessage::send(NEW_PROPERTY, $landlord, $newProperty);
+            return $this->respondWithSuccess('Success !! Property has been created.');
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -189,7 +190,7 @@ class PropertyController extends ApiController
     public function show($uuid)
     {
         $property = $this->propertyRepository->getById($uuid, $this->load);
-        if(!$property)
+        if (!$property)
             return $this->respondNotFound('Property not found.');
 
         return $this->respondWithData(new PropertyResource($property));
@@ -207,76 +208,76 @@ class PropertyController extends ApiController
             throw new \Exception('Action is not allowed.');
         try {
             DB::beginTransaction();
-                $data = $request->all();
-                $property = $this->propertyRepository->getById($id);
-                if (!$property)
-                    return $this->respondNotFound('Error retrieving property');
-                $this->propertyRepository->update($request->validated(), $id);
+            $data = $request->all();
+            $property = $this->propertyRepository->getById($id);
+            if (!$property)
+                return $this->respondNotFound('Error retrieving property');
+            $this->propertyRepository->update($request->validated(), $id);
 
-                // Payment Methods
-                if(array_key_exists('paymentMethodFields', $data)){
-                    $paymentMethodFields = $data['paymentMethodFields'];
-                    if (isset($paymentMethodFields)){
-                        $paymentMethodData = [];
-                        foreach ($paymentMethodFields as $key => $value){
-                            $paymentMethodData[$value['payment_method_id']] = [
-                                'payment_method_description'    => $value['payment_method_description']
-                            ];
-                        }
-                        $property->payment_methods()->sync($paymentMethodData);
+            // Payment Methods
+            if (array_key_exists('paymentMethodFields', $data)) {
+                $paymentMethodFields = $data['paymentMethodFields'];
+                if (isset($paymentMethodFields)) {
+                    $paymentMethodData = [];
+                    foreach ($paymentMethodFields as $key => $value) {
+                        $paymentMethodData[$value['payment_method_id']] = [
+                            'payment_method_description' => $value['payment_method_description']
+                        ];
                     }
+                    $property->payment_methods()->sync($paymentMethodData);
                 }
+            }
 
-                // Utility cost fields
-                if(array_key_exists('utilityFields', $data)) {
-                    $utilityCostFields = $data['utilityFields'];
-                    if (isset($utilityCostFields)) {
-                        $utilityCostData = [];
-                        foreach ($utilityCostFields as $key => $value) {
-                            $utilityCostData[$value['utility_id']] = [
-                                'utility_unit_cost'     => $value['utility_unit_cost'],
-                                'utility_base_fee'      => $value['utility_base_fee']
-                            ];
-                        }
-                        $property->utility_costs()->sync($utilityCostData);
+            // Utility cost fields
+            if (array_key_exists('utilityFields', $data)) {
+                $utilityCostFields = $data['utilityFields'];
+                if (isset($utilityCostFields)) {
+                    $utilityCostData = [];
+                    foreach ($utilityCostFields as $key => $value) {
+                        $utilityCostData[$value['utility_id']] = [
+                            'utility_unit_cost' => $value['utility_unit_cost'],
+                            'utility_base_fee' => $value['utility_base_fee']
+                        ];
                     }
+                    $property->utility_costs()->sync($utilityCostData);
                 }
+            }
 
-                // Extra Charges
-                if(array_key_exists('extraChargeFields', $data)){
-                    $extraChargeFields = $data['extraChargeFields'];
-                    if (isset($extraChargeFields)){
-                        $extraChargeData = [];
-                        foreach ($extraChargeFields as $key => $value){
-                            $extraChargeData[$value['extra_charge_id']] = [
-                                    'extra_charge_value'        => $value['extra_charge_value'],
-                                    'extra_charge_type'         => $value['extra_charge_type'],
-                                    'extra_charge_frequency'    => $value['extra_charge_frequency']
-                                ];
-                        }
-                        $property->extra_charges()->sync($extraChargeData);
+            // Extra Charges
+            if (array_key_exists('extraChargeFields', $data)) {
+                $extraChargeFields = $data['extraChargeFields'];
+                if (isset($extraChargeFields)) {
+                    $extraChargeData = [];
+                    foreach ($extraChargeFields as $key => $value) {
+                        $extraChargeData[$value['extra_charge_id']] = [
+                            'extra_charge_value' => $value['extra_charge_value'],
+                            'extra_charge_type' => $value['extra_charge_type'],
+                            'extra_charge_frequency' => $value['extra_charge_frequency']
+                        ];
                     }
+                    $property->extra_charges()->sync($extraChargeData);
                 }
+            }
 
-                // Late Fees
-                if(array_key_exists('lateFeeFields', $data)){
-                    $lateFeeFields = $data['lateFeeFields'];
-                    if (isset($lateFeeFields)){
-                        $lateFeeData = [];
-                        foreach ($lateFeeFields as $key => $value){
-                            $lateFeeData[$value['late_fee_id']] = [
-                                'grace_period'          => $value['grace_period'],
-                                'late_fee_value'        => $value['late_fee_value'],
-                                'late_fee_type'         => $value['late_fee_type'],
-                                'late_fee_frequency'    => $value['late_fee_frequency']
-                            ];
-                        }
-                        $property->late_fees()->sync($lateFeeData);
+            // Late Fees
+            if (array_key_exists('lateFeeFields', $data)) {
+                $lateFeeFields = $data['lateFeeFields'];
+                if (isset($lateFeeFields)) {
+                    $lateFeeData = [];
+                    foreach ($lateFeeFields as $key => $value) {
+                        $lateFeeData[$value['late_fee_id']] = [
+                            'grace_period' => $value['grace_period'],
+                            'late_fee_value' => $value['late_fee_value'],
+                            'late_fee_type' => $value['late_fee_type'],
+                            'late_fee_frequency' => $value['late_fee_frequency']
+                        ];
                     }
+                    $property->late_fees()->sync($lateFeeData);
                 }
+            }
             DB::commit();
             return $this->respondWithSuccess('Success !! Property has been updated.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -311,7 +312,7 @@ class PropertyController extends ApiController
                 $property->late_fees()->detach();
                 $property->extra_charges()->detach();
                 $property->utility_costs()->detach();
-                $property->leases()->each(function($lease) {
+                $property->leases()->each(function ($lease) {
                     $lease->units()->detach();
                     $lease->tenants()->detach();
                     $lease->utility_deposits()->detach();
@@ -324,14 +325,14 @@ class PropertyController extends ApiController
                     $lease->payment_methods()->detach();
                     $lease->delete();
                 });
-              //  $property->leases()->delete();
+                //  $property->leases()->delete();
                 $property->units()->delete();
                 $property->delete();
                 DB::commit();
                 return $this->respondWithSuccess('Success !! Property has been deleted.');
             }
             throw new \Exception('Action is not allowed.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -340,22 +341,23 @@ class PropertyController extends ApiController
     /**
      * @param Request $request
      */
-    public function uploadPhoto(Request $request) {
+    public function uploadPhoto(Request $request)
+    {
         $data = $request->all();
         $fileNameToStore = '';
         // Upload logo
-        if($request->hasFile('property_photo')) {
+        if ($request->hasFile('property_photo')) {
             $filenameWithExt = $request->file('property_photo')->getClientOriginalName();
             // Get just filename
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
             // Get just ext
             $extension = $request->file('property_photo')->getClientOriginalExtension();
             // Filename to store
-            $fileNameToStore = $filename.'_'.time().'.'.$extension;
+            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
             $path = $request->file('property_photo')->storeAs('photos', $fileNameToStore);
             $data['property_photo'] = $fileNameToStore;
 
-            $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR .'photos'.DIRECTORY_SEPARATOR. $fileNameToStore;
+            $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR . 'photos' . DIRECTORY_SEPARATOR . $fileNameToStore;
 
             // Update the property
             $this->propertyRepository->update(
@@ -365,7 +367,7 @@ class PropertyController extends ApiController
         }
         return json_encode($fileNameToStore);
         // also, delete previous image file from server
-       // $this->memberRepository->update(array_filter($data), $data['id']);
+        // $this->memberRepository->update(array_filter($data), $data['id']);
     }
 
     /**
@@ -374,9 +376,9 @@ class PropertyController extends ApiController
     public function profilePic(Request $request)
     {
         $data = $request->all();
-        if( array_key_exists('file_path', $data) ) {
+        if (array_key_exists('file_path', $data)) {
             $file_path = $data['file_path'];
-            $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR .'photos'.DIRECTORY_SEPARATOR. $file_path;
+            $local_path = config('filesystems.disks.local.root') . DIRECTORY_SEPARATOR . 'photos' . DIRECTORY_SEPARATOR . $file_path;
             return response()->file($local_path);
         }
         return $this->respondNotFound('file_path not provided');
@@ -386,15 +388,16 @@ class PropertyController extends ApiController
      * @param Request $request
      * @return mixed
      */
-	public function search(Request $request) {
+    public function search(Request $request)
+    {
         $data = $request->all();
         if (array_key_exists('filter', $data)) {
             $filter = $data['filter'];
 
-			$data = $this->propertyRepository->search($filter, ['extra_charges', 'units', 'late_fees', 'utility_costs', 'payment_methods']);
-			return PropertyResource::collection($data);
+            $data = $this->propertyRepository->search($filter, ['extra_charges', 'units', 'late_fees', 'utility_costs', 'payment_methods']);
+            return PropertyResource::collection($data);
 
-           // return $this->propertyRepository->search($filter, ['extra_charges', 'units', 'late_fees', 'utility_costs', 'payment_methods']);
+            // return $this->propertyRepository->search($filter, ['extra_charges', 'units', 'late_fees', 'utility_costs', 'payment_methods']);
         }
     }
 
@@ -402,7 +405,8 @@ class PropertyController extends ApiController
      * @param Request $request
      * @return mixed
      */
-    public function periods(Request $request) {
+    public function periods(Request $request)
+    {
         $data = $request->all();
         if (array_key_exists('id', $data)) {
             $property = $this->propertyRepository->getById($data['id']);
