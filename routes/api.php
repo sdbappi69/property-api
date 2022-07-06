@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\LandlordNoticesController;
 use App\Http\Controllers\Api\LandlordPaymentsController;
 use App\Http\Controllers\Api\LandlordProfileController;
 use App\Http\Controllers\Api\LandlordPropertiesController;
+use App\Http\Controllers\Api\LandlordTenantsController;
 use App\Http\Controllers\Api\LateFeeController;
 use App\Http\Controllers\Api\LeaseController;
 use App\Http\Controllers\Api\LeaseInvoicesController;
@@ -160,6 +161,7 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
     Route::post('properties/upload_photo', [PropertyController::class, 'uploadPhoto']);
     Route::post('properties/profile_pic', [PropertyController::class, 'profilePic']);
 
+    Route::apiResource('landlords.tenants', LandlordTenantsController::class)->only(['index', 'show']);
     Route::apiResource('landlords.properties', LandlordPropertiesController::class)->only(['index', 'show']);
     Route::apiResource('landlords.leases', LandlordLeasesController::class)->only(['index', 'show']);
     Route::apiResource('landlords.invoices', LandlordInvoicesController::class)->only(['index', 'show']);
