@@ -30,8 +30,10 @@ class TenantRepository extends BaseRepository implements TenantInterface
      * @param $email
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Query\Builder|object|null
      */
-    function getViaEmail($email) {
+    function getViaEmail($email)
+    {
         return $this->model->where('email', $email)
+            ->where('status', 1)
             ->orderBy('updated_at', 'desc')
             ->first();
     }

@@ -56,6 +56,8 @@ class LandlordController extends ApiController
         try {
             DB::beginTransaction();
                 $data = $request->all();
+                $data['physical_address'] = $data['postal_address'];
+                $data['residential_address'] = $data['postal_address'];
                 $landlord = $this->landlordRepository->create($data);
                 if (!isset($landlord))
                     return $this->respondNotSaved('Not Saved');
@@ -108,6 +110,8 @@ class LandlordController extends ApiController
                 'password_set' => 1,
             ];
             $data = array_diff_key($request->all(), $doNotUpdate);
+            $data['physical_address'] = $data['postal_address'];
+            $data['residential_address'] = $data['postal_address'];
             $this->landlordRepository->update(array_filter($data), $id);
             DB::commit();
             return $this->respondWithSuccess('Success !! Landlord has been updated.');
