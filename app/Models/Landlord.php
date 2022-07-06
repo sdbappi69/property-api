@@ -131,6 +131,10 @@ class Landlord extends BaseModel implements
     {
         return $this->hasMany(Property::class, 'landlord_id');
     }
+    public function tenants()
+    {
+        return $this->hasMany(Tenant::class, 'landlord_id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough

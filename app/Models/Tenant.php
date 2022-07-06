@@ -55,6 +55,7 @@ class Tenant extends BaseModel implements
      */
     protected $fillable = [
             'agent_id',
+            'landlord_id',
             'tenant_type_id',
             'first_name',
             'middle_name',

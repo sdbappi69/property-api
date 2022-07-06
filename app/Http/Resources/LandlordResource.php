@@ -48,6 +48,7 @@ class LandlordResource extends JsonResource
             'property_total' => $this->property_total,
             'unit_total' => $this->unit_total,
             'properties' => LandlordResource::collection($this->whenLoaded('properties')),
+            'tenant' => TenantResource::collection($this->whenLoaded('tenants')),
 
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
