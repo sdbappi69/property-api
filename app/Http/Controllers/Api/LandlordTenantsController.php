@@ -16,7 +16,7 @@ use App\Models\Tenant;
 use App\Rental\Repositories\Contracts\LandlordInterface;
 use App\Rental\Repositories\Contracts\PaymentInterface;
 
-class LandlordPropertiesController extends ApiController
+class LandlordTenantsController extends ApiController
 {
     /**
      * @var LandlordInterface
@@ -24,7 +24,7 @@ class LandlordPropertiesController extends ApiController
     protected $landlordRepository, $load, $loginProxy;
 
     /**
-     * LandlordPropertiesController constructor.
+     * LandlordTenantsController constructor.
      * @param LandlordInterface $landlordRepository
      * @param LoginProxy $loginProxy
      */
@@ -54,9 +54,9 @@ class LandlordPropertiesController extends ApiController
             if (isset($properties))
                 return $this->respondWithData(TenantResource::collection($properties));
 
-            return $this->respondNotFound('Properties not found.');
+            return $this->respondNotFound('Tenants not found.');
         }
-        return $this->respondNotFound('Properties not found.');
+        return $this->respondNotFound('Tenants not found.');
     }
 
     /**
