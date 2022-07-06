@@ -34,11 +34,11 @@ class LandlordTenantsController extends ApiController
         $this->loginProxy = $loginProxy;
         $this->load = [
             'tenant_type',
-            'landlord',
-            'payment_methods',
-            'extra_charges',
-            'late_fees',
-            'utility_costs'
+            //'landlord',
+           // 'payment_methods',
+            //'extra_charges',
+            //'late_fees',
+           // 'utility_costs'
         ];
     }
 
@@ -50,9 +50,9 @@ class LandlordTenantsController extends ApiController
     {
         if ($this->loginProxy->checkLandlord($landlord)) {
             $limit = $this->landlordRepository->limit();
-            $properties = $landlord->properties()->with($this->load)->paginate($limit);
-            if (isset($properties))
-                return $this->respondWithData(TenantResource::collection($properties));
+            $tenants = $landlord->tenants()->with($this->load)->paginate($limit);
+            if (isset($tenants))
+                return $this->respondWithData(TenantResource::collection($tenants));
 
             return $this->respondNotFound('Tenants not found.');
         }

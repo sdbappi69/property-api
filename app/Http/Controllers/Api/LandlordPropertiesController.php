@@ -34,11 +34,11 @@ class LandlordPropertiesController extends ApiController
         $this->loginProxy = $loginProxy;
         $this->load = [
             'property_type',
-            //'landlord',
-            //'payment_methods',
-            //'extra_charges',
-           // 'late_fees',
-            //'utility_costs'
+            'landlord',
+            'payment_methods',
+            'extra_charges',
+            'late_fees',
+            'utility_costs'
         ];
     }
 
