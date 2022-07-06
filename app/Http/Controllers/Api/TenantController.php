@@ -32,7 +32,7 @@ class TenantController extends ApiController
         $this->tenantRepository = $tenantInterface;
         $this->leaseRepository = $leaseRepository;
         $this->invoiceRepository = $invoiceRepository;
-        $this->load = [];
+        $this->load = ['landlord'];
     }
 
     /**
