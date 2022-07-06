@@ -8,3 +8,5 @@
     alter table `leases` add `status` tinyint not null default '1' comment '0=Inactive,1=Active' after `show_payment_method_on_invoice`
 -- AddStatusCoulumnToUtilitiesTable:
     alter table `utilities` add `status` tinyint not null default '1' comment '0=Inactive,1=Active' after `utility_description`
+-- AddLandlordIdToTenantsTable:
+    alter table `tenants` add `landlord_id` varchar(36) null after `agent_id`

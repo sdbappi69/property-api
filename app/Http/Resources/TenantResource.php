@@ -27,6 +27,8 @@ class TenantResource extends JsonResource
             'id' => $this->id,
 
             'agent_id'=> $this->agent_id,
+            'landlord_id'=> $this->landlord_id,
+            'landlord' => LandlordResource::make($this->whenLoaded('landlord')),
             'tenant_type_id'=> $this->tenant_type_id,
             'first_name'=> $this->first_name,
             'middle_name'=> $this->middle_name,

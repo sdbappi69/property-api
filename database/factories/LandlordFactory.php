@@ -22,7 +22,7 @@ class LandlordFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'middle_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
-            'phone' => $this->faker->phoneNumber(),
+            'phone' => '01'.rand(3,9).rand(00000000,99999999),
             'email' => $this->faker->unique()->email(),
             'registration_date' => $this->faker->date(),
             'id_number' => random_int(1000000,9999999),
@@ -35,8 +35,7 @@ class LandlordFactory extends Factory
             'password' => '123456',
             'confirmed' => 0,
             'confirmation_code' => null,
-            'created_at' => $this->faker->dateTime()
-
+            'created_at' => date('Y-m-'.rand(01,30).' '.rand(00,23).':'.rand(00,59).':'.rand(00,59))
         ];
     }
 }

@@ -36,6 +36,7 @@ class TenantRequest extends BaseRequest
                 {
                     $rules = [
                         'agent_id' => 'nullable|exists:agents,id',
+                        'landlord_id'=> '',
                         'tenant_type_id'=> '',
                         'first_name'=> '',
                         'middle_name'=> '',

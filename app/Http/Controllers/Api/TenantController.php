@@ -58,6 +58,7 @@ class TenantController extends ApiController
         try {
             DB::beginTransaction();
             $data = $request->all();
+            $data['landlord_id'] = auth()->user()->tokenCan('am-landlord') ? auth()->user()->id : request('landlord_id');
             $tenant = $this->tenantRepository->create($data);
             if (!isset($tenant))
                 return $this->respondNotSaved('Not Saved');

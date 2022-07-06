@@ -14,6 +14,7 @@ use App\Traits\SearchableTrait;
 use App\Traits\StatusModelTrait;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -30,6 +31,7 @@ class Tenant extends BaseModel implements
 {
     use HasApiTokens, Notifiable, Authenticatable, Authorizable, CanResetPassword, SearchableTrait;
     use StatusModelTrait;
+    use HasFactory;
 
     /**
      * The database table used by the model.
@@ -171,6 +173,11 @@ class Tenant extends BaseModel implements
     public function agent()
     {
         return $this->belongsTo(Agent::class, 'agent_id');
+    }
+
+    public function landlord()
+    {
+        return $this->belongsTo(Landlord::class, 'landlord_id');
     }
 
     /**

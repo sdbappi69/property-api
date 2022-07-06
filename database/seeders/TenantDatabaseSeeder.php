@@ -21,12 +21,15 @@ class TenantDatabaseSeeder extends Seeder
 
         DB::table('tenants')->delete();
 
-        Tenant::create([
-            'email' => 'tenant@tenant.com',
-            'first_name' => 'Tenant',
-            'last_name' => 'Tenant',
-            'phone' => '8801763456950',
-            'password' => 'tenant',
-        ]);
+        Tenant::factory()->count(100)->create();
+        $this->command->line('Done 100 !');
+
+//        Tenant::create([
+//            'email' => 'tenant@tenant.com',
+//            'first_name' => 'Tenant',
+//            'last_name' => 'Tenant',
+//            'phone' => '8801763456950',
+//            'password' => 'tenant',
+//        ]);
     }
 }
