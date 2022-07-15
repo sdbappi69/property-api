@@ -16,6 +16,7 @@ use Ramsey\Uuid\Uuid;
 class Lease extends BaseModel
 {
     use SearchableTrait;
+
     /**
      * The database table used by the model.
      *
@@ -46,7 +47,7 @@ class Lease extends BaseModel
         'due_date', // used for penalty calculations?
         'rent_amount',
         'rent_deposit',
-     //   'billing_frequency', /// I decided to have the system have monthly as default and only billing frequency
+        //   'billing_frequency', /// I decided to have the system have monthly as default and only billing frequency
         'billed_on',
         'terminated_on',
         'terminated_by',
@@ -71,15 +72,22 @@ class Lease extends BaseModel
      * @var string[]
      */
     protected $casts = [
-        'next_period_billing'   => 'boolean',
-        'skip_starting_period'  => 'boolean',
-        'waive_penalty'         => 'boolean',
+        'next_period_billing' => 'boolean',
+        'skip_starting_period' => 'boolean',
+        'waive_penalty' => 'boolean',
     ];
 
     /**
      * @param $billed_on
      *
      */
+
+    public function meter_readings()
+    {
+        return $this->hasMany(LeaseMeterReading::class, 'lease_id', 'id')
+            ->orderBy('created_at', 'DESC');
+    }
+
     public function setBilledOnAttribute($billed_on)
     {
         $this->attributes['billed_on'] = date('Y-m-d', strtotime($billed_on));
@@ -142,29 +150,29 @@ class Lease extends BaseModel
                     $leasePrefix = $leaseSettings->lease_number_prefix;
                 if ($latest) {
                     $string = preg_replace("/[^0-9\.]/", '', $latest->lease_number);
-                    $model->lease_number =  $leasePrefix . sprintf('%04d', $string+1);
-                }else{
-                    $model->lease_number = $leasePrefix.'0001';
+                    $model->lease_number = $leasePrefix . sprintf('%04d', $string + 1);
+                } else {
+                    $model->lease_number = $leasePrefix . '0001';
                 }
 
                 Account::create([
-                    'id'                => Uuid::uuid4(),
-                    'lease_id'          => $model['id'],
-                    'property_id'       => $model['property_id'],
-                    'account_class_id'  => getAccountClassID(ASSET),
-                    'account_type'      => LEASE_ACCOUNT,
-                    'account_name'      => LEASE_ACCOUNT,
-                    'account_number'    => LEASE_ACCOUNT_CODE.'-'.$model['lease_number']
+                    'id' => Uuid::uuid4(),
+                    'lease_id' => $model['id'],
+                    'property_id' => $model['property_id'],
+                    'account_class_id' => getAccountClassID(ASSET),
+                    'account_type' => LEASE_ACCOUNT,
+                    'account_name' => LEASE_ACCOUNT,
+                    'account_number' => LEASE_ACCOUNT_CODE . '-' . $model['lease_number']
                 ]);
 
                 Account::create([
-                    'id'                => Uuid::uuid4(),
-                    'lease_id'          => $model['id'],
-                    'property_id'       => $model['property_id'],
-                    'account_class_id'  => getAccountClassID(ASSET),
-                    'account_type'      => LEASE_SUSPENSE,
-                    'account_name'      => LEASE_SUSPENSE,
-                    'account_number'    => LEASE_SUSPENSE_CODE.'-'.$model['lease_number']
+                    'id' => Uuid::uuid4(),
+                    'lease_id' => $model['id'],
+                    'property_id' => $model['property_id'],
+                    'account_class_id' => getAccountClassID(ASSET),
+                    'account_type' => LEASE_SUSPENSE,
+                    'account_name' => LEASE_SUSPENSE,
+                    'account_number' => LEASE_SUSPENSE_CODE . '-' . $model['lease_number']
                 ]);
             });
         } catch (\Exception $e) {
@@ -290,7 +298,7 @@ class Lease extends BaseModel
             ->withPivot('payment_method_description');
     }
 
-	  /**
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function terminate_user()

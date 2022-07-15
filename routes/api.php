@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\LandlordPropertiesController;
 use App\Http\Controllers\Api\LandlordTenantsController;
 use App\Http\Controllers\Api\LateFeeController;
 use App\Http\Controllers\Api\LeaseController;
+use App\Http\Controllers\Api\LeaseMeterReadingController;
 use App\Http\Controllers\Api\LeaseInvoicesController;
 use App\Http\Controllers\Api\LeaseModeController;
 use App\Http\Controllers\Api\LeaseSettingController;
@@ -187,6 +188,10 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
 
     // Must be below properties.leases
 
+    Route::post('leases/meter-readings', [LeaseMeterReadingController::class, 'store']);
+    Route::post('leases/meter-readings/update', [LeaseMeterReadingController::class, 'update']);
+    Route::post('leases/meter-readings/delete', [LeaseMeterReadingController::class, 'destroy']);
+
     Route::post('leases/search', [LeaseController::class, 'search']);
     Route::post('leases/terminate', [LeaseController::class, 'terminate']);
     Route::apiResource('leases', LeaseController::class);
@@ -194,7 +199,7 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
     Route::apiResource('tenant_types', TenantTypeController::class);
     Route::apiResource('tenants', TenantController::class)
         ->middleware(['scope:view-tenant']);;
-	Route::post('tenants/search', [TenantController::class, 'search']);
+    Route::post('tenants/search', [TenantController::class, 'search']);
 
     Route::apiResource('invoices', InvoiceController::class);
     Route::post('invoices/search', [InvoiceController::class, 'search']);
@@ -215,7 +220,7 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
     Route::post('payments/receipt', [PaymentController::class, 'downloadReceipt']);
 
     Route::post('payments/approve', [PaymentController::class, 'approve']);
-    Route::post('payments/cancel',  [PaymentController::class, 'cancel']);
+    Route::post('payments/cancel', [PaymentController::class, 'cancel']);
 
     Route::apiResource('/tasks', TaskController::class);
     Route::apiResource('/task_categories', TaskCategoryController::class);
@@ -238,9 +243,9 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
 
     Route::apiResource('/readings', ReadingController::class);
     Route::post('readings/previous', [ReadingController::class, 'previousReading']);
-	Route::post('readings/csv_template', [ReadingController::class, 'csvTemplate']);
-	Route::post('readings/excel_template', [ReadingController::class, 'excelTemplate']);
-	Route::post('readings/upload_readings', [ReadingController::class, 'uploadReadings']);
+    Route::post('readings/csv_template', [ReadingController::class, 'csvTemplate']);
+    Route::post('readings/excel_template', [ReadingController::class, 'excelTemplate']);
+    Route::post('readings/upload_readings', [ReadingController::class, 'uploadReadings']);
 
     Route::apiResource('/general_settings', GeneralSettingController::class)
         ->middleware(['scope:manage-setting']);
@@ -250,9 +255,9 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
         ->middleware(['scope:manage-setting']);
 
     Route::apiResource('user_profile', UserProfileController::class)->only(['index', 'update'])
-    ->middleware(['scope:edit-profile']);
+        ->middleware(['scope:edit-profile']);
     Route::post('user_profile/forgot_password', [UserProfileController::class, 'forgotPassword']);
-       // ->middleware(['scope:profile-me']);
+    // ->middleware(['scope:profile-me']);
     Route::post('user_profile/upload_photo', [UserProfileController::class, 'uploadPhoto'])
         ->middleware(['scope:edit-profile']);
     Route::post('user_profile/fetch_photo', [UserProfileController::class, 'fetchPhoto'])->where(['file_name' => '.*'])
@@ -274,7 +279,7 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
 
     // summary
     Route::get('vacant_units', [VacantUnitsController::class, 'index']);
- //   Route::get('billing_summaries', [PeriodBillingController::class, 'index']);
+    //   Route::get('billing_summaries', [PeriodBillingController::class, 'index']);
     Route::post('billing_summaries/property', [PeriodBillingController::class, 'propertyBilling']);
 
     Route::get('tenant_summaries', [TenantSummaryController::class, 'index'])->middleware(['scope:am-tenant']);
@@ -287,12 +292,11 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
 });
 
 
-
 // Unprotected routes
 // Dev only
 //TODO  - remove this section on production launch
 Route::group(array('prefix' => '/v0'), function () {
-  //  Route::get('accounts/test', [AccountController::class, 'generalAccountStatement']);
-  //  Route::get('invoices/test', [InvoiceController::class, 'downloadInvoice']);
+    //  Route::get('accounts/test', [AccountController::class, 'generalAccountStatement']);
+    //  Route::get('invoices/test', [InvoiceController::class, 'downloadInvoice']);
 
 });

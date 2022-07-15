@@ -34,8 +34,8 @@ class LeaseController extends ApiController
      * @param InvoiceItemInterface $invoiceItemRepository
      * @param LandlordInterface $landlordRepository
      */
-    public function __construct(LeaseInterface $leaseInterface, UnitInterface $unitRepository,
-                                JournalInterface $journalInterface, InvoiceInterface $invoiceRepository,
+    public function __construct(LeaseInterface       $leaseInterface, UnitInterface $unitRepository,
+                                JournalInterface     $journalInterface, InvoiceInterface $invoiceRepository,
                                 InvoiceItemInterface $invoiceItemRepository, LandlordInterface $landlordRepository)
     {
         $this->leaseRepository = $leaseInterface;
@@ -56,7 +56,8 @@ class LeaseController extends ApiController
             'tenants',
             'units',
             'payment_methods',
-			'terminate_user'
+            'terminate_user',
+            'meter_readings'
         ];
     }
 
@@ -84,26 +85,26 @@ class LeaseController extends ApiController
         try {
             DB::beginTransaction();
             $data = $request->all();
-         /*   if(array_key_exists('skip_starting_period', $data) && $data['skip_starting_period']) {
-                $leaseStartDate = $data['start_date'];
-                $dateAfterSkippingFirstPeriod = Carbon::parse($leaseStartDate)->addMonthsNoOverflow();
-                $nextBillingDate = Carbon::parse($leaseStartDate)
-                    ->addMonthsNoOverflow()
-                    ->setUnitNoOverflow('day', $data['generate_invoice_on'], 'month')
-                    ->format('Y-m-d');
-                $data['billed_on'] = $leaseStartDate;
-                $data['next_billing_date'] = $nextBillingDate;
-            }*/
+            /*   if(array_key_exists('skip_starting_period', $data) && $data['skip_starting_period']) {
+                   $leaseStartDate = $data['start_date'];
+                   $dateAfterSkippingFirstPeriod = Carbon::parse($leaseStartDate)->addMonthsNoOverflow();
+                   $nextBillingDate = Carbon::parse($leaseStartDate)
+                       ->addMonthsNoOverflow()
+                       ->setUnitNoOverflow('day', $data['generate_invoice_on'], 'month')
+                       ->format('Y-m-d');
+                   $data['billed_on'] = $leaseStartDate;
+                   $data['next_billing_date'] = $nextBillingDate;
+               }*/
             $newLease = $this->leaseRepository->create($data);
-            if(array_key_exists('utilityDeposits', $data)) {
+            if (array_key_exists('utilityDeposits', $data)) {
                 $utilityDepositsData = $data['utilityDeposits'];
                 if (isset($utilityDepositsData)) {
                     foreach ($utilityDepositsData as $key => $value) {
                         if (array_key_exists('deposit_amount', $value) && $value['deposit_amount'] > 0)
                             $newLease->utility_deposits()->attach($value['utility_id'],
                                 [
-                                    'utility_id'        => $value['utility_id'],
-                                    'deposit_amount'    => $value['deposit_amount']
+                                    'utility_id' => $value['utility_id'],
+                                    'deposit_amount' => $value['deposit_amount']
                                 ]
                             );
                     }
@@ -111,17 +112,17 @@ class LeaseController extends ApiController
             }
 
             // Extra Charges
-            if(array_key_exists('extraCharges', $data)) {
+            if (array_key_exists('extraCharges', $data)) {
                 $extraChargesData = $data['extraCharges'];
                 if (isset($extraChargesData)) {
                     foreach ($extraChargesData as $key => $value) {
                         if (array_key_exists('extra_charge_value', $value) && $value['extra_charge_value'] > 0)
                             $newLease->extra_charges()->attach($value['extra_charge_id'],
                                 [
-                                    'extra_charge_id'           => $value['extra_charge_id'],
-                                    'extra_charge_value'        => $value['extra_charge_value'],
-                                    'extra_charge_type'         => $value['extra_charge_type'],
-                                    'extra_charge_frequency'    => $value['extra_charge_frequency']
+                                    'extra_charge_id' => $value['extra_charge_id'],
+                                    'extra_charge_value' => $value['extra_charge_value'],
+                                    'extra_charge_type' => $value['extra_charge_type'],
+                                    'extra_charge_frequency' => $value['extra_charge_frequency']
                                 ]
                             );
                     }
@@ -129,33 +130,33 @@ class LeaseController extends ApiController
             }
 
             // Late Fees
-            if(array_key_exists('lateFeeFields', $data)) {
+            if (array_key_exists('lateFeeFields', $data)) {
                 $lateFeeFields = $data['lateFeeFields'];
-                if (isset($lateFeeFields)){
-                    foreach ($lateFeeFields as $key => $value){
+                if (isset($lateFeeFields)) {
+                    foreach ($lateFeeFields as $key => $value) {
                         if (array_key_exists('late_fee_value', $value) && $value['late_fee_value'] > 0)
                             $newLease->late_fees()->attach($value['late_fee_id'],
                                 [
-                                    'grace_period'          => $value['grace_period'],
-                                    'late_fee_value'        => $value['late_fee_value'],
-                                    'late_fee_type'         => $value['late_fee_type'],
-                                    'late_fee_frequency'    => $value['late_fee_frequency']
+                                    'grace_period' => $value['grace_period'],
+                                    'late_fee_value' => $value['late_fee_value'],
+                                    'late_fee_type' => $value['late_fee_type'],
+                                    'late_fee_frequency' => $value['late_fee_frequency']
                                 ]
                             );
                     }
                 }
             }
 
-            if(array_key_exists('utilityCharges', $data)) {
+            if (array_key_exists('utilityCharges', $data)) {
                 $utilityChargesData = $data['utilityCharges'];
                 if (isset($utilityChargesData)) {
                     foreach ($utilityChargesData as $key => $value) {
                         if ($value['utility_unit_cost'] > 0 || $value['utility_base_fee'] > 0)
                             $newLease->utility_charges()->attach($value['utility_id'],
                                 [
-                                    'utility_id'    => $value['utility_id'],
-                                    'utility_unit_cost'     => $value['utility_unit_cost'],
-                                    'utility_base_fee'      => $value['utility_base_fee']
+                                    'utility_id' => $value['utility_id'],
+                                    'utility_unit_cost' => $value['utility_unit_cost'],
+                                    'utility_base_fee' => $value['utility_base_fee']
                                 ]
                             );
                     }
@@ -163,22 +164,22 @@ class LeaseController extends ApiController
             }
 
             // Payment Methods
-            if(array_key_exists('paymentMethodFields', $data)){
+            if (array_key_exists('paymentMethodFields', $data)) {
                 $paymentMethodFields = $data['paymentMethodFields'];
-                if (isset($paymentMethodFields)){
-                    foreach ($paymentMethodFields as $key => $value){
+                if (isset($paymentMethodFields)) {
+                    foreach ($paymentMethodFields as $key => $value) {
                         $newLease->payment_methods()->attach($value['payment_method_id'],
                             [
-                                'payment_method_description'     => $value['payment_method_description']
+                                'payment_method_description' => $value['payment_method_description']
                             ]
                         );
                     }
                 }
             }
 
-            if(array_key_exists('tenants', $data)) {
+            if (array_key_exists('tenants', $data)) {
                 $tenantsData = $data['tenants'];
-                if (isset($tenantsData)){
+                if (isset($tenantsData)) {
                     foreach ($tenantsData as $key => $value) {
                         $newLease->tenants()->attach($value['id'],
                             [
@@ -189,13 +190,13 @@ class LeaseController extends ApiController
                 }
             }
 
-            if(array_key_exists('units', $data)) {
+            if (array_key_exists('units', $data)) {
                 $unitsData = $data['units'];
-                if (isset($unitsData)){
+                if (isset($unitsData)) {
                     foreach ($unitsData as $key => $value) {
                         $newLease->units()->attach($value['id'],
                             [
-                                'unit_id'   => $value['id'],
+                                'unit_id' => $value['id'],
                                 'unit_name' => $value['unit_name']
                             ]
                         );
@@ -210,7 +211,7 @@ class LeaseController extends ApiController
             $landlord = $this->landlordRepository->getById($newLease['landlord_id']);
             CommunicationMessage::send(NEW_LEASE, $landlord, $newLease);
             return $this->respondWithSuccess('Success !! Lease has been created.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -241,77 +242,77 @@ class LeaseController extends ApiController
             throw new \Exception('Action is not allowed.');
         try {
             DB::beginTransaction();
-                $data = $request->all();
-                $lease = $this->leaseRepository->getById($id);
-                if (!$lease)
-                    return $this->respondNotFound('Error retrieving lease');
-                if (isset($lease['terminated_on']))
-                    throw new \Exception('Error !! Terminated Lease cannot be edited.');
-                $this->leaseRepository->update($request->validated(), $id);
-                // Extra Charges
-                if(array_key_exists('extraCharges', $data)){
-                    $extraChargeFields = $data['extraCharges'];
-                    if (isset($extraChargeFields)){
-                        $extraChargeData = [];
-                        foreach ($extraChargeFields as $key => $value){
-                            $extraChargeData[$value['extra_charge_id']] = [
-                                'extra_charge_value'        => $value['extra_charge_value'],
-                                'extra_charge_type'         => $value['extra_charge_type'],
-                                'extra_charge_frequency'    => $value['extra_charge_frequency']
-                            ];
-                        }
-                        $lease->extra_charges()->sync($extraChargeData);
+            $data = $request->all();
+            $lease = $this->leaseRepository->getById($id);
+            if (!$lease)
+                return $this->respondNotFound('Error retrieving lease');
+            if (isset($lease['terminated_on']))
+                throw new \Exception('Error !! Terminated Lease cannot be edited.');
+            $this->leaseRepository->update($request->validated(), $id);
+            // Extra Charges
+            if (array_key_exists('extraCharges', $data)) {
+                $extraChargeFields = $data['extraCharges'];
+                if (isset($extraChargeFields)) {
+                    $extraChargeData = [];
+                    foreach ($extraChargeFields as $key => $value) {
+                        $extraChargeData[$value['extra_charge_id']] = [
+                            'extra_charge_value' => $value['extra_charge_value'],
+                            'extra_charge_type' => $value['extra_charge_type'],
+                            'extra_charge_frequency' => $value['extra_charge_frequency']
+                        ];
                     }
+                    $lease->extra_charges()->sync($extraChargeData);
                 }
+            }
 
-                // Late Fees
-                if(array_key_exists('lateFeeFields', $data)){
-                    $lateFeeFields = $data['lateFeeFields'];
-                    if (isset($lateFeeFields)){
-                        $lateFeeData = [];
-                        foreach ($lateFeeFields as $key => $value){
-                            $lateFeeData[$value['late_fee_id']] = [
-                                'grace_period'          => $value['grace_period'],
-                                'late_fee_value'        => $value['late_fee_value'],
-                                'late_fee_type'         => $value['late_fee_type'],
-                                'late_fee_frequency'    => $value['late_fee_frequency']
-                            ];
-                        }
-                        $lease->late_fees()->sync($lateFeeData);
+            // Late Fees
+            if (array_key_exists('lateFeeFields', $data)) {
+                $lateFeeFields = $data['lateFeeFields'];
+                if (isset($lateFeeFields)) {
+                    $lateFeeData = [];
+                    foreach ($lateFeeFields as $key => $value) {
+                        $lateFeeData[$value['late_fee_id']] = [
+                            'grace_period' => $value['grace_period'],
+                            'late_fee_value' => $value['late_fee_value'],
+                            'late_fee_type' => $value['late_fee_type'],
+                            'late_fee_frequency' => $value['late_fee_frequency']
+                        ];
                     }
+                    $lease->late_fees()->sync($lateFeeData);
                 }
+            }
 
-                // Utility charges
-                if(array_key_exists('utilityCharges', $data)) {
-                    $utilityCostFields = $data['utilityCharges'];
-                    if (isset($utilityCostFields)) {
-                        $utilityCostData = [];
-                        foreach ($utilityCostFields as $key => $value) {
-                            $utilityCostData[$value['utility_id']] = [
-                                'utility_unit_cost'     => $value['utility_unit_cost'],
-                                'utility_base_fee'      => $value['utility_base_fee']
-                            ];
-                        }
-                        $lease->utility_charges()->sync($utilityCostData);
+            // Utility charges
+            if (array_key_exists('utilityCharges', $data)) {
+                $utilityCostFields = $data['utilityCharges'];
+                if (isset($utilityCostFields)) {
+                    $utilityCostData = [];
+                    foreach ($utilityCostFields as $key => $value) {
+                        $utilityCostData[$value['utility_id']] = [
+                            'utility_unit_cost' => $value['utility_unit_cost'],
+                            'utility_base_fee' => $value['utility_base_fee']
+                        ];
                     }
+                    $lease->utility_charges()->sync($utilityCostData);
                 }
+            }
 
-                // Payment Methods
-                if(array_key_exists('paymentMethodFields', $data)){
-                    $paymentMethodFields = $data['paymentMethodFields'];
-                    if (isset($paymentMethodFields)){
-                        $paymentMethodData = [];
-                        foreach ($paymentMethodFields as $key => $value){
-                            $paymentMethodData[$value['payment_method_id']] = [
-                                'payment_method_description'    => $value['payment_method_description']
-                            ];
-                        }
-                        $lease->payment_methods()->sync($paymentMethodData);
+            // Payment Methods
+            if (array_key_exists('paymentMethodFields', $data)) {
+                $paymentMethodFields = $data['paymentMethodFields'];
+                if (isset($paymentMethodFields)) {
+                    $paymentMethodData = [];
+                    foreach ($paymentMethodFields as $key => $value) {
+                        $paymentMethodData[$value['payment_method_id']] = [
+                            'payment_method_description' => $value['payment_method_description']
+                        ];
                     }
+                    $lease->payment_methods()->sync($paymentMethodData);
                 }
-                DB::commit();
-                return $this->respondWithSuccess('Success !! Lease has been updated.');
-        }catch (\Exception $e){
+            }
+            DB::commit();
+            return $this->respondWithSuccess('Success !! Lease has been updated.');
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -348,7 +349,7 @@ class LeaseController extends ApiController
                 return $this->respondWithSuccess('Success !! Lease has been deleted.');
             }
             throw new \Exception('Action is not allowed.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -358,7 +359,8 @@ class LeaseController extends ApiController
      * @param Request $request
      * @return |null
      */
-	public function search(Request $request) {
+    public function search(Request $request)
+    {
         $data = $request->all();
         if (array_key_exists('filter', $data)) {
             $filter = $data['filter'];
@@ -372,7 +374,8 @@ class LeaseController extends ApiController
      * @return array
      * @throws \Exception
      */
-    public function terminate(Request $request) {
+    public function terminate(Request $request)
+    {
         if (!auth()->user()->tokenCan('terminate-lease'))
             throw new \Exception('Action is not allowed.');
         try {
@@ -393,7 +396,7 @@ class LeaseController extends ApiController
             $lease = $this->leaseRepository->getById($leaseID);
             $landlord = $this->landlordRepository->getById($lease['landlord_id']);
             CommunicationMessage::send(TERMINATE_LEASE, $landlord, $lease);
-        return $this->respondWithSuccess('Lease has been terminated');
+            return $this->respondWithSuccess('Lease has been terminated');
         } catch (\Exception $exception) {
             DB::rollback();
             throw new \Exception($exception->getMessage());
