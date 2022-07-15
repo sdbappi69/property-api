@@ -32,6 +32,8 @@ class LandlordResource extends JsonResource
             'last_name' => $this->last_name,
             'phone' => $this->phone,
             'email' => $this->email,
+            'logo' => $this->logo,
+            'digital_signature' => $this->digital_signature,
             'registration_date' => $this->registration_date,
             'registration_date_display' => format_date($this->registration_date),
             'id_number' => $this->id_number,

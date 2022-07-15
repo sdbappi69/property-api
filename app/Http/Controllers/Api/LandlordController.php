@@ -25,12 +25,12 @@ class LandlordController extends ApiController
      * @param InvoiceInterface $invoiceRepository
      */
     public function __construct(LandlordInterface $landlordInterface,
-                                LeaseInterface $lease,
-                                InvoiceInterface $invoiceRepository)
+                                LeaseInterface    $lease,
+                                InvoiceInterface  $invoiceRepository)
     {
-        $this->landlordRepository   = $landlordInterface;
+        $this->landlordRepository = $landlordInterface;
         $this->invoiceRepository = $invoiceRepository;
-        $this->lease   = $lease;
+        $this->lease = $lease;
         $this->load = [];
     }
 
@@ -55,16 +55,26 @@ class LandlordController extends ApiController
     {
         try {
             DB::beginTransaction();
-                $data = $request->all();
-                $data['physical_address'] = $data['postal_address'];
-                $data['residential_address'] = $data['postal_address'];
-                $landlord = $this->landlordRepository->create($data);
-                if (!isset($landlord))
-                    return $this->respondNotSaved('Not Saved');
+            $data = $request->all();
+            if ($request->hasFile('logo')) {
+                $imageName = auth()->user()->id . '_' . date('Ymdhis') . '.' . $request->logo->extension();
+                $request->logo->storeAs('public/logos', $imageName);
+                $data['logo'] = $imageName;
+            }
+            if ($request->hasFile('digital_signature')) {
+                $imageName = auth()->user()->id . '_' . date('Ymdhis') . '.' . $request->digital_signature->extension();
+                $request->digital_signature->storeAs('public/digital_signatures', $imageName);
+                $data['digital_signature'] = $imageName;
+            }
+            $data['physical_address'] = $data['postal_address'] ?? null;
+            $data['residential_address'] = $data['postal_address'] ?? null;
+            $landlord = $this->landlordRepository->create($data);
+            if (!isset($landlord))
+                return $this->respondNotSaved('Not Saved');
             DB::commit();
             CommunicationMessage::send(NEW_LANDLORD, $landlord);
             return $this->respondWithSuccess('Success !! Landlord has been created.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -87,8 +97,8 @@ class LandlordController extends ApiController
             $item['amount_paid'] =  $this->transactionRepository->invoicePaidAmount($item['id']);
             return $item;
         });*/
-		$landlordResource = LandlordResource::make($landlord);
-		// $invoiceResource['amount_paid']=  $this->transactionRepository->invoicePaidAmount($invoiceResource['id']);
+        $landlordResource = LandlordResource::make($landlord);
+        // $invoiceResource['amount_paid']=  $this->transactionRepository->invoicePaidAmount($invoiceResource['id']);
 
         return $this->respondWithData($landlordResource);
     }
@@ -110,12 +120,22 @@ class LandlordController extends ApiController
                 'password_set' => 1,
             ];
             $data = array_diff_key($request->all(), $doNotUpdate);
-            $data['physical_address'] = $data['postal_address'];
-            $data['residential_address'] = $data['postal_address'];
+            if ($request->hasFile('logo')) {
+                $imageName = auth()->user()->id . '_' . date('Ymdhis') . '.' . $request->logo->extension();
+                $request->logo->storeAs('public/logos', $imageName);
+                $data['logo'] = $imageName;
+            }
+            if ($request->hasFile('digital_signature')) {
+                $imageName = auth()->user()->id . '_' . date('Ymdhis') . '.' . $request->digital_signature->extension();
+                $request->digital_signature->storeAs('public/digital_signatures', $imageName);
+                $data['digital_signature'] = $imageName;
+            }
+            $data['physical_address'] = $data['postal_address'] ?? null;
+            $data['residential_address'] = $data['postal_address'] ?? null;
             $this->landlordRepository->update(array_filter($data), $id);
             DB::commit();
             return $this->respondWithSuccess('Success !! Landlord has been updated.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -142,7 +162,7 @@ class LandlordController extends ApiController
                 }
                 if ($pendingAmount != 0)
                     throw new \Exception('Landlord has pending invoices');
-                $landlord->properties()->each(function($property) {
+                $landlord->properties()->each(function ($property) {
                     $property->extra_charges()->detach();
                     $property->notices()->delete();
                     $property->invoices()->delete();
@@ -159,7 +179,7 @@ class LandlordController extends ApiController
                 return $this->respondWithSuccess('Success !! Landlord has been deleted.');
             }
             throw new \Exception('Action is not allowed.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
@@ -169,7 +189,8 @@ class LandlordController extends ApiController
      * @param Request $request
      * @return mixed
      */
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $data = $request->all();
         $filter = '';
         if (array_key_exists('filter', $data))

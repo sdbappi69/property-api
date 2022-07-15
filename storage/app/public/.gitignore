@@ -1,2 +1,6 @@
 *
 !.gitignore
+!logos/
+!digital_signatures/
+!logos/no_logo.png
+!digital_signatures/no_digital_signature.png

@@ -75,7 +75,9 @@ class Landlord extends BaseModel implements
 
         'created_by',
         'updated_by',
-        'deleted_by'
+        'deleted_by',
+        'logo',
+        'digital_signature'
     ];
 
     /**
@@ -119,6 +121,24 @@ class Landlord extends BaseModel implements
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    public function getLogoAttribute($value)
+    {
+        if (is_null($value)) {
+            return asset('storage/logos/no_logo.png');
+        } else {
+            return asset('storage/logos/' . $value);
+        }
+    }
+
+    public function getDigitalSignatureAttribute($value)
+    {
+        if (is_null($value)) {
+            return asset('storage/digital_signatures/no_digital_signature.png');
+        } else {
+            return asset('storage/digital_signatures/' . $value);
+        }
+    }
+
     public function agent()
     {
         return $this->belongsTo(Agent::class, 'agent_id');
@@ -131,6 +151,7 @@ class Landlord extends BaseModel implements
     {
         return $this->hasMany(Property::class, 'landlord_id');
     }
+
     public function tenants()
     {
         return $this->hasMany(Tenant::class, 'landlord_id');
