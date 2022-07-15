@@ -188,9 +188,12 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
 
     // Must be below properties.leases
 
-    Route::post('leases/meter-readings', [LeaseMeterReadingController::class, 'store']);
-    Route::post('leases/meter-readings/update', [LeaseMeterReadingController::class, 'update']);
-    Route::post('leases/meter-readings/delete', [LeaseMeterReadingController::class, 'destroy']);
+    Route::post('leases/meter-readings', [LeaseMeterReadingController::class, 'store'])
+        ->middleware(['scope:create-lease-meter-reading']);
+    Route::post('leases/meter-readings/update', [LeaseMeterReadingController::class, 'update'])
+        ->middleware(['scope:update-lease-meter-reading']);
+    Route::post('leases/meter-readings/delete', [LeaseMeterReadingController::class, 'destroy'])
+        ->middleware(['scope:delete-lease-meter-reading']);
 
     Route::post('leases/search', [LeaseController::class, 'search']);
     Route::post('leases/terminate', [LeaseController::class, 'terminate']);
