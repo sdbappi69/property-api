@@ -64,7 +64,9 @@ class Lease extends BaseModel
 
         'skip_starting_period', // should we bill the same month as starting date, or make invoice for next period
         'generate_invoice_on', // day of month when invoices are generated
-        'next_period_billing'
+        'next_period_billing',
+        'special_rent_amount',
+        'deposit_deduction_percentage'
     ];
 
     /**
