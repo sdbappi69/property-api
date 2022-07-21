@@ -143,8 +143,11 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
     Route::apiResource('fees', FeeController::class)->middleware(['scope:create-property']);
 
     Route::apiResource('journals', JournalController::class)->middleware(['scope:view-lease']);
+
+    Route::post('landlords/{landlord_id}', [LandlordController::class, 'update']);
     Route::apiResource('landlords', LandlordController::class)
         ->middleware(['scope:view-landlord,create-landlord,edit-landlord,delete-landlord']);
+
     Route::post('landlords/search', [LandlordController::class, 'search'])
         ->middleware(['scope:view-landlord,create-landlord,edit-landlord,delete-landlord']);
 
