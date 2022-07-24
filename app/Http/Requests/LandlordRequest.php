@@ -21,6 +21,7 @@ class LandlordRequest extends BaseRequest
      */
     public function rules()
     {
+
         $rules = [];
         switch ($this->method()) {
             case 'GET':
@@ -37,6 +38,7 @@ class LandlordRequest extends BaseRequest
                     $rules['email'] = 'required|email|unique:landlords,email,NULL,id,deleted_at,NULL';
                     $rules['phone'] = 'required|string|min:11|max:11|unique:landlords,phone,NULL,id,deleted_at,NULL';
                 } else {
+                    $this->landlord = $this->route()->parameter('landlord_id');
                     $rules['email'] = ['required', 'email', Rule::unique('landlords')->ignore($this->landlord, 'id')
                         ->where(function ($query) {
                             $query->where('deleted_at', NULL);
