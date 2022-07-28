@@ -25,8 +25,8 @@ class LandlordResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'agent_id' => $this->agent_id,
-            'agent' => $this->agent,
+            'agent_id' => $this->agent_id ?? null,
+            'agent' => $this->agent ?? null,
             'first_name' => $this->first_name,
             'middle_name' => $this->middle_name,
             'last_name' => $this->last_name,
