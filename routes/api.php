@@ -103,6 +103,7 @@ use Illuminate\Support\Facades\Route;
 |  Routes to obtain access_token and manage token refresh
 |
 */
+Route::get('test-invoice', [\App\Http\Controllers\TestMeController::class, 'invoice_test']);
 Route::group(array('prefix' => '/v1'), function () {
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/login/refresh', [LoginController::class, 'refresh']);

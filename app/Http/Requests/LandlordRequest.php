@@ -21,6 +21,7 @@ class LandlordRequest extends BaseRequest
      */
     public function rules()
     {
+        request()->merge(['agent_id' => null]);
 
         $rules = [];
         switch ($this->method()) {
@@ -35,14 +36,22 @@ class LandlordRequest extends BaseRequest
                 $rules = [];
 
                 if (!$this->route()->parameter('landlord_id')) {
-                    $rules['email'] = 'required|email|unique:landlords,email,NULL,id,deleted_at,NULL';
+                    $rules['email'] = 'required|email|unique:landlords,email,NULL,id,deleted_at,NULL|unique:users,email,NULL,id,deleted_at,NULL|unique:tenants,email,NULL,id,deleted_at,NULL';
                     $rules['phone'] = 'required|string|min:11|max:11|unique:landlords,phone,NULL,id,deleted_at,NULL';
                 } else {
                     $this->landlord = $this->route()->parameter('landlord_id');
-                    $rules['email'] = ['required', 'email', Rule::unique('landlords')->ignore($this->landlord, 'id')
-                        ->where(function ($query) {
+                    $rules['email'] = ['required', 'email',
+                        Rule::unique('landlords')->ignore($this->landlord, 'id')
+                            ->where(function ($query) {
+                                $query->where('deleted_at', NULL);
+                            }),
+                        Rule::unique('users')->where(function ($query) {
                             $query->where('deleted_at', NULL);
-                        })];
+                        }),
+                        Rule::unique('tenants')->where(function ($query) {
+                            $query->where('deleted_at', NULL);
+                        })
+                    ];
                     $rules['phone'] = ['required', 'regex:/^([0-9\s\-\+\(\)]*)$/',
                         Rule::unique('landlords')->ignore($this->landlord, 'id')
                             ->where(function ($query) {
