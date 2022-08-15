@@ -124,6 +124,8 @@ Route::group(array('prefix' => '/v1'), function () {
 */
 Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])->group(function () {
     Route::prefix('custom-reports')->group(function () {
+        Route::post('item-wise', [ReportController::class, 'item_wise']);
+        Route::post('details-tenant-summary', [ReportController::class, 'details_tenant_summary']);
         Route::post('service-charge', [ReportController::class, 'service_charge_report']);
         Route::post('collection-report', [ReportController::class, 'collection_report']);
         Route::post('due-statement', [ReportController::class, 'due_statement']);
