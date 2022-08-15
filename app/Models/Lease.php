@@ -190,6 +190,11 @@ class Lease extends BaseModel
         return $this->belongsTo(Agent::class, 'agent_id');
     }
 
+    public function landlord()
+    {
+        return $this->belongsTo(Landlord::class, 'landlord_id');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

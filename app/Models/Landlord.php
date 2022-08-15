@@ -129,6 +129,12 @@ class Landlord extends BaseModel implements
             return asset('storage/logos/' . $value);
         }
     }
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . (!empty($this->middle_name) ?
+                " $this->middle_name" : '') . (!empty($this->last_name) ?
+                " $this->last_name" : '');
+    }
 
     public function getDigitalSignatureAttribute($value)
     {

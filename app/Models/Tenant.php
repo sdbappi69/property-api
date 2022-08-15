@@ -54,63 +54,63 @@ class Tenant extends BaseModel implements
      * @var array
      */
     protected $fillable = [
-            'agent_id',
-            'landlord_id',
-            'tenant_type_id',
-            'first_name',
-            'middle_name',
-            'last_name',
-            'gender',
-            'date_of_birth',
-            'id_passport_number',
-            'marital_status',
-            'tenant_number',
-            'phone',
-            'email',
-            'country',
-            'state',
-            'city',
-            'postal_code',
-            'postal_address',
-            'physical_address',
+        'agent_id',
+        'landlord_id',
+        'tenant_type_id',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'gender',
+        'date_of_birth',
+        'id_passport_number',
+        'marital_status',
+        'tenant_number',
+        'phone',
+        'email',
+        'country',
+        'state',
+        'city',
+        'postal_code',
+        'postal_address',
+        'physical_address',
 
-            'business_name',
-            'registration_number',
-            'business_industry',
-            'business_description',
-            'business_address',
+        'business_name',
+        'registration_number',
+        'business_industry',
+        'business_description',
+        'business_address',
 
-            'next_of_kin_name',
-            'next_of_kin_phone',
-            'next_of_kin_relation',
+        'next_of_kin_name',
+        'next_of_kin_phone',
+        'next_of_kin_relation',
 
-            'emergency_contact_name',
-            'emergency_contact_phone',
-            'emergency_contact_email',
-            'emergency_contact_relationship',
-            'emergency_contact_postal_address',
-            'emergency_contact_physical_address',
+        'emergency_contact_name',
+        'emergency_contact_phone',
+        'emergency_contact_email',
+        'emergency_contact_relationship',
+        'emergency_contact_postal_address',
+        'emergency_contact_physical_address',
 
-            'employment_status',
-            'employment_position',
-            'employer_contact_phone',
-            'employer_contact_email',
-            'employment_postal_address',
-            'employment_physical_address',
+        'employment_status',
+        'employment_position',
+        'employer_contact_phone',
+        'employer_contact_email',
+        'employment_postal_address',
+        'employment_physical_address',
 
-            'rent_payment_contact',
-            'rent_payment_contact_postal_address',
-            'rent_payment_contact_physical_address',
+        'rent_payment_contact',
+        'rent_payment_contact_postal_address',
+        'rent_payment_contact_physical_address',
 
-            'profile_pic',
-            'password_set',
-            'password',
-            'confirmed',
-            'confirmation_code',
+        'profile_pic',
+        'password_set',
+        'password',
+        'confirmed',
+        'confirmation_code',
 
-            'created_by',
-            'updated_by',
-            'deleted_by'
+        'created_by',
+        'updated_by',
+        'deleted_by'
     ];
 
     /**
@@ -119,6 +119,13 @@ class Tenant extends BaseModel implements
     public function setDateOfBirthAttribute($date_of_birth)
     {
         $this->attributes['date_of_birth'] = date('Y-m-d', strtotime($date_of_birth));
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . (!empty($this->middle_name) ?
+                " $this->middle_name" : '') . (!empty($this->last_name) ?
+                " $this->last_name" : '');
     }
 
     /**
@@ -151,15 +158,15 @@ class Tenant extends BaseModel implements
 
         static::creating(function ($model) {
             $latest = $model->latest()->first();
-			 $tenantSettings = TenantSetting::first();
-                $tenantPrefix = 'TN';
-                if (isset($tenantSettings))
-                    $tenantPrefix = $tenantSettings->tenant_number_prefix;
+            $tenantSettings = TenantSetting::first();
+            $tenantPrefix = 'TN';
+            if (isset($tenantSettings))
+                $tenantPrefix = $tenantSettings->tenant_number_prefix;
             if ($latest) {
                 $string = preg_replace("/[^0-9\.]/", '', $latest->tenant_number);
-                $model->tenant_number =  $tenantPrefix . sprintf('%04d', $string+1);
-            }else{
-                $model->tenant_number = $tenantPrefix .'0001';
+                $model->tenant_number = $tenantPrefix . sprintf('%04d', $string + 1);
+            } else {
+                $model->tenant_number = $tenantPrefix . '0001';
             }
         });
     }
@@ -221,6 +228,6 @@ class Tenant extends BaseModel implements
     {
         return $this->belongsToMany(Invoice::class, 'lease_tenants', 'tenant_id', 'lease_id');
         return $this->leases();
-       // return $this->hasManyThrough(Invoice::class, LeaseTenant::class, 'tenant_id', 'lease_id');
+        // return $this->hasManyThrough(Invoice::class, LeaseTenant::class, 'tenant_id', 'lease_id');
     }
 }

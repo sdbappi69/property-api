@@ -82,6 +82,7 @@ use App\Http\Controllers\Api\UtilityController;
 use App\Http\Controllers\Api\VacationNoticeController;
 use App\Http\Controllers\Api\WaiverController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\CustomReports\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,7 +123,15 @@ Route::group(array('prefix' => '/v1'), function () {
 |
 */
 Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])->group(function () {
-
+    Route::prefix('custom-reports')->group(function () {
+        Route::post('service-charge', [ReportController::class, 'service_charge_report']);
+        Route::post('collection-report', [ReportController::class, 'collection_report']);
+        Route::post('due-statement', [ReportController::class, 'due_statement']);
+        Route::post('monthly-invoice', [ReportController::class, 'monthly_invoice']);
+        Route::post('notice', [ReportController::class, 'notice']);
+        Route::post('vat-tax', [ReportController::class, 'vat_tax']);
+    });
+    Route::post('landlords/{landlord_id}', [LandlordController::class, 'update']);
     Route::apiResource('/users', UserController::class)->middleware(['scope:manage-setting']);
     Route::apiResource('/currencies', CurrencyController::class)->middleware(['scope:manage-setting']);
     Route::apiResource('roles', RoleController::class)->middleware(['scope:manage-setting']);
