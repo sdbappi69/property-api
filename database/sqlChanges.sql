@@ -10,3 +10,6 @@
     alter table `utilities` add `status` tinyint not null default '1' comment '0=Inactive,1=Active' after `utility_description`
 -- AddLandlordIdToTenantsTable:
     alter table `tenants` add `landlord_id` varchar(36) null after `agent_id`
+-- AddLandlordIdColumnToUsersTable:
+    alter table `users` add `landlord_id` varchar(36) null after `id`
+

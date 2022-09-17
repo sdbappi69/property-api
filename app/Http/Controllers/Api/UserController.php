@@ -53,6 +53,7 @@ class UserController extends ApiController
     public function store(UserRequest $request)
     {
         $data = $request->all();
+        $data['landlord_id'] = auth()->user()->tokenCan('am-landlord') ? auth()->user()->id : request('landlord_id');
         $save = $this->userRepository->create($data);
 
         if (!is_null($save) && $save['error']) {
