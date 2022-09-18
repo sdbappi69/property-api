@@ -39,6 +39,12 @@ class UserController extends ApiController
      */
     public function index(Request $request)
     {
+        if (auth()->user()->tokenCan('am-landlord')) {
+            request()->merge([
+                'whereField' => 'landlord_id',
+                'whereValue' => auth()->user()->id,
+            ]);
+        }
         if ($select = request()->query('list')) {
             return $this->userRepository->listAll($this->formatFields($select), []);
         } else
@@ -91,7 +97,7 @@ class UserController extends ApiController
         if (!is_null($save) && $save['error']) {
             return $this->respondNotSaved($save['message']);
         } else {
-          //  $this->loginProxy->logout();
+            //  $this->loginProxy->logout();
             return $this->respondWithSuccess('Success !! User has been updated.');
         }
     }
@@ -111,12 +117,11 @@ class UserController extends ApiController
                     $this->userRepository->delete($uuid);
                     DB::commit();
                     return $this->respondWithSuccess('Success !! Landlord has been deleted.');
-                }
-                else
+                } else
                     throw new \Exception('Error: Cannot delete self.');
             }
             throw new \Exception('Action is not allowed.');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             throw new \Exception($e->getMessage());
         }
