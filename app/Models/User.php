@@ -43,6 +43,7 @@ class User extends BaseModel implements
      */
     protected $fillable = [
         'role_id',
+        'landlord_id',
         'first_name',
         'middle_name',
         'last_name',
