@@ -48,4 +48,25 @@ class TenantRepository extends BaseRepository implements TenantInterface
             ->get();
     }
 
+    public function listAll($select, $load = array())
+    {
+
+        array_push($select, 'id');
+
+        $data = [];
+        try {
+            if (auth()->user()->tokenCan('am-landlord')) {
+                $this->model = $this->model->where('landlord_id', auth()->user()->id);
+            }
+            if ($load) {
+                $data = $this->model->with($load)->get($select);
+            } else
+                $data = $this->model->get($select);
+
+        } catch (\Exception $e) {
+        }
+
+        return $data;
+    }
+
 }
