@@ -97,7 +97,8 @@ class LoginProxy
                 ->where('provider', 'tenants')
                 ->latest()
                 ->first();
-
+            $user->logo = $user->landlord->logo ?? null;
+            $user->digital_signature = $user->landlord->digital_signature ?? null;
             return [
                 'user' => $user,
                 'client' => $client,
@@ -230,7 +231,6 @@ class LoginProxy
             false,
             true // HttpOnly
         );
-
         return [
             'access_token' => $decodedResponse->access_token,
             'expires_in' => $decodedResponse->expires_in,
@@ -239,6 +239,8 @@ class LoginProxy
             'first_name' => $user ? $user['first_name'] : null,
             'middle_name' => $user ? $user['middle_name'] : null,
             'last_name' => $user ? $user['last_name'] : null,
+            'logo' => !empty($user['logo']) ? $user['logo'] : null,
+            'digital_signature' => !empty($user['digital_signature']) ? $user['digital_signature'] : null,
             'scope' => $data['scope']
         ];
     }

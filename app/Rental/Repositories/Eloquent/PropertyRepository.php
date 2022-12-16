@@ -25,4 +25,14 @@ class PropertyRepository extends BaseRepository implements PropertyInterface
     {
         $this->model = $model;
     }
+
+    public function search($searchFilter, $load = array())
+    {
+        $query = $this->model;
+        if (auth()->user()->tokenCan('am-landlord')) {
+            $query->where('landlord_id', auth()->user()->id);
+        }
+        return $query->with($load)->search($searchFilter, null, true, true)
+            ->get();
+    }
 }
