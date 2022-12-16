@@ -395,6 +395,7 @@ class PropertyController extends ApiController
             $filter = $data['filter'];
 
             $data = $this->propertyRepository->search($filter, ['extra_charges', 'units', 'late_fees', 'utility_costs', 'payment_methods']);
+            dd($data->toArray());
             return PropertyResource::collection($data);
 
             // return $this->propertyRepository->search($filter, ['extra_charges', 'units', 'late_fees', 'utility_costs', 'payment_methods']);

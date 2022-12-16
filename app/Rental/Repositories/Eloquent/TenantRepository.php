@@ -42,7 +42,7 @@ class TenantRepository extends BaseRepository implements TenantInterface
     {
         $query = $this->model;
         if (auth()->user()->tokenCan('am-landlord')) {
-            $query->where('landlord_id', auth()->user()->id);
+            $query = $query->where('landlord_id', auth()->user()->id);
         }
         return $query->with($load)->search($searchFilter, null, true, true)
             ->get();
