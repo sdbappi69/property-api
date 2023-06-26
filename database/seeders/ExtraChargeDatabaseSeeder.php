@@ -37,5 +37,11 @@ class ExtraChargeDatabaseSeeder extends Seeder
             'extra_charge_display_name' => 'VAT',
             'extra_charge_description' => 'VAT'
         ]);
+
+        ExtraCharge::create([
+            'extra_charge_name' => 'ATI',
+            'extra_charge_display_name' => 'ATI',
+            'extra_charge_description' => 'ATI'
+        ]);
     }
 }

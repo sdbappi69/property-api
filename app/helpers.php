@@ -19,7 +19,7 @@ if (!function_exists('format_money')) {
      */
     function format_money($amount)
     {
-        return isset($amount) ? number_format($amount, amountDecimal(), amountDecimalSeparator(), amountThousandSeparator()) : null;
+        return isset($amount) ? number_format(floatval($amount), amountDecimal(), amountDecimalSeparator(), amountThousandSeparator()) : null;
        // return number_format($amount, amountDecimal(), amountDecimalSeparator(), amountThousandSeparator());
     }
 }

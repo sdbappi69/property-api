@@ -194,6 +194,7 @@ class TestMeController extends Controller
                     }
 
                     if (isset($extraChargeAmount) && $extraChargeAmount > 0) {
+                        $extraChargeAmount = $value['extra_charge_name'] == 'ATI' ? -abs($extraChargeAmount) : $extraChargeAmount;
                         $this->journalRepository->earnExtraCharge([
                             'narration' => $extraChargeNarration,
                             'lease_id' => $lease['id'],

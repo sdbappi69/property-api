@@ -154,6 +154,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/stella-maris/clock" />
       <excludeFolder url="file://$MODULE_DIR$/storage/app/public/digital_signatures" />
       <excludeFolder url="file://$MODULE_DIR$/storage/app/public/logos" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/app" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/fonts" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

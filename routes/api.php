@@ -133,7 +133,7 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
         Route::post('notice', [ReportController::class, 'notice']);
         Route::post('vat-tax', [ReportController::class, 'vat_tax']);
     });
-    Route::post('landlords/{landlord_id}', [LandlordController::class, 'update']);
+//    Route::post('landlords/{landlord_id}', [LandlordController::class, 'update']);
     Route::apiResource('/users', UserController::class)->middleware(['scope:manage-setting']);
     Route::apiResource('/currencies', CurrencyController::class)->middleware(['scope:manage-setting']);
     Route::apiResource('roles', RoleController::class)->middleware(['scope:manage-setting']);
@@ -156,11 +156,11 @@ Route::prefix('v1')->middleware(['auth:api,landlords,tenants', 'throttle:60,1'])
 
     Route::apiResource('journals', JournalController::class)->middleware(['scope:view-lease']);
 
-    Route::post('landlords/{landlord_id}', [LandlordController::class, 'update']);
-    Route::apiResource('landlords', LandlordController::class)
-        ->middleware(['scope:view-landlord,create-landlord,edit-landlord,delete-landlord']);
 
     Route::post('landlords/search', [LandlordController::class, 'search'])
+        ->middleware(['scope:view-landlord,create-landlord,edit-landlord,delete-landlord']);
+    Route::post('landlords/{landlord_id}', [LandlordController::class, 'update']);
+    Route::apiResource('landlords', LandlordController::class)
         ->middleware(['scope:view-landlord,create-landlord,edit-landlord,delete-landlord']);
 
     Route::apiResource('lease_modes', LeaseModeController::class)->middleware(['scope:manage-setting']);

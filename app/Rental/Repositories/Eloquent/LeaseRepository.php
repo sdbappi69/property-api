@@ -172,6 +172,17 @@ class LeaseRepository extends BaseRepository implements LeaseInterface
         throw new \Exception('Null lease ID');
     }
 
+    public function getSquareFeet($leaseId)
+    {
+        $lease = Lease::where('id', $leaseId)
+            ->withSum('units', 'square_foot')
+            ->first();
+
+        if (isset($lease))
+            return floatval($lease->units_sum_square_foot);
+        throw new \Exception('Null lease ID');
+    }
+
     /**
      * @param $leaseId
      * @param $value
@@ -195,6 +206,11 @@ class LeaseRepository extends BaseRepository implements LeaseInterface
             case 'total_rent_over_due_percentage':
             {
                 return ($value / 100) * $this->getRentOverDueAmount($leaseId);
+                break;
+            }
+            case 'per_square_feet':
+            {
+                return $value * $this->getSquareFeet($leaseId);
                 break;
             }
             default:
@@ -417,6 +433,7 @@ class LeaseRepository extends BaseRepository implements LeaseInterface
                     }
 
                     if (isset($extraChargeAmount) && $extraChargeAmount > 0) {
+                        $extraChargeAmount = $value['extra_charge_name'] == 'ATI' ? -abs($extraChargeAmount) : $extraChargeAmount;
                         $this->journalRepository->earnExtraCharge([
                             'narration' => $extraChargeNarration,
                             'lease_id' => $lease['id'],
@@ -459,8 +476,8 @@ class LeaseRepository extends BaseRepository implements LeaseInterface
             if (isset($utilityChargesData)) {
                 foreach ($utilityChargesData as $key => $value) {
                     $utilityID = $value['id'];
-                    $unitCost = $value['pivot']['unit_cost'];
-                    $baseFee = $value['pivot']['base_fee'];
+                    $unitCost = $value['pivot']['utility_unit_cost'];
+                    $baseFee = $value['pivot']['utility_base_fee'];
                     $utilityDisplayName = $value['utility_display_name'];
                     $utilityNarration = $utilityDisplayName . ' - ' . $periodName;
 
