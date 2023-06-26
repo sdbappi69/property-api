@@ -124,9 +124,9 @@ class Landlord extends BaseModel implements
     public function getLogoAttribute($value)
     {
         if (is_null($value)) {
-            return asset('storage/logos/no_logo.png');
+            return config('app.url').('/storage/logos/no_logo.png');
         } else {
-            return asset('storage/logos/' . $value);
+            return config('app.url').('/storage/logos/' . $value);
         }
     }
     public function getFullNameAttribute()
@@ -139,9 +139,9 @@ class Landlord extends BaseModel implements
     public function getDigitalSignatureAttribute($value)
     {
         if (is_null($value)) {
-            return asset('storage/digital_signatures/no_digital_signature.png');
+            return config('app.url').('/storage/digital_signatures/no_digital_signature.png');
         } else {
-            return asset('storage/digital_signatures/' . $value);
+            return config('app.url').('/storage/digital_signatures/' . $value);
         }
     }
 
